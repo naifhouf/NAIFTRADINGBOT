@@ -1,0 +1,479 @@
+
+<!-- naif_trader_ultra_locked.html -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NAIF TRADING BOT — VIP (Ultra)</title>
+<meta name="description" content="Forex/Metals/Crypto/Indices/Oil Signals (UTC+3) — NAIF TRADING BOT" />
+<meta name="author" content="@najran2015" />
+<style>
+  :root{
+    --bg1:#0f1117; --bg2:#151a24;
+    --card: rgba(22,24,34,0.88);
+    --border: rgba(255,255,255,0.12);
+    --text:#eaeef7; --muted:#a0a7b5;
+    --gold:#ffd54f; --accent:#1e88e5; --ok:#3ddc84; --bad:#ff6b6b;
+  }
+  [data-theme="light"]{
+    --bg1:#f5f7fb; --bg2:#eaf0ff;
+    --card: rgba(255,255,255,0.86);
+    --border: rgba(0,0,0,0.12);
+    --text:#111827; --muted:#4b5563;
+    --gold:#c69100; --accent:#0b72d2; --ok:#0a7f49; --bad:#c01f1f;
+  }
+  body{
+    background: linear-gradient(135deg,var(--bg1),var(--bg2));
+    color:var(--text); font-family:'Segoe UI',Tahoma,sans-serif; margin:0; padding:22px 10px;
+  }
+  .wm{ position:fixed; inset:0; pointer-events:none; display:flex; align-items:center; justify-content:center; opacity:.08; z-index:0; }
+  .wm span{ font-size:10vw; font-weight:900; letter-spacing:4px; text-transform:uppercase; color:#000; filter:contrast(150%) blur(.2px); }
+  .wrap{ position:relative; z-index:1; max-width:1024px; margin:0 auto; }
+  .brand{ display:flex; align-items:center; gap:10px; justify-content:center; margin-bottom:8px }
+  .logo{ width:56px; height:56px; border-radius:16px; background: radial-gradient(60% 60% at 20% 20%, #333, #111);
+          border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-weight:900; letter-spacing:.5px; user-select:none; cursor:pointer; }
+  .logo span{ color:var(--gold); }
+  .card{ background-color: var(--card); border:1px solid var(--border); border-radius:18px; padding:18px; margin:14px auto 0; box-shadow:0 12px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04); }
+  h1{ font-size:26px; color:var(--gold); margin:6px 0 10px; text-align:center }
+  .sub{ color:var(--muted); font-size:14px; text-align:center }
+  label{ font-size:14px; color:var(--muted); display:block; margin:6px 0 6px; }
+  .row{ display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap; }
+  .row>div{ flex:1 }
+  input,select,button{ width:100%; padding:12px; font-size:16px; border-radius:12px; border:1px solid var(--border); background:#15161b; color:#fff; outline:none; }
+  [data-theme="light"] input,[data-theme="light"] select,[data-theme="light"] button{ background:#ffffff; color:#111; }
+  button{ background: linear-gradient(135deg, #1565c0, var(--accent)); border:none; cursor:pointer; }
+  button:hover{ filter:brightness(1.06); }
+  button.disabled{ background:#3a3a3a; cursor:not-allowed; }
+  .result{ margin-top:12px; background:rgba(15,19,32,.9); padding:16px; border-radius:12px; font-size:16px; white-space:pre-line; min-height:160px; border:1px dashed var(--border) }
+  [data-theme="light"] .result{ background:#f8fafc; }
+  .muted{ color:var(--muted); font-size:13px }
+  .clock{ position:fixed; top:8px; right:10px; background:#00000066; padding:6px 10px; border-radius:10px; border:1px solid var(--border); font-family:monospace; font-size:13px; color:#fff; }
+  [data-theme="light"] .clock{ background:#00000020; color:#111; }
+  .grid2{ display:grid; grid-template-columns: 1fr 1fr; gap:12px }
+  @media(max-width:760px){ .grid2{grid-template-columns:1fr} }
+  .toolbar{ display:flex; gap:10px; justify-content:center; margin-top:6px }
+  .colorbox{ display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap; }
+  .swatch{ display:flex; align-items:center; gap:8px }
+  .swatch input[type="color"]{ width:42px; height:36px; padding:0; border-radius:10px; border:1px solid var(--border); }
+</style>
+</head>
+<body>
+<div class="wm"><span>NAIF TRADING BOT</span></div>
+<div class="clock" id="ksaClock">--:--:-- +03</div>
+
+<div class="wrap">
+  <!-- Login -->
+  <div id="loginCard" class="card">
+    <div class="brand"><div class="logo" id="logo"><span>NT</span></div><div><h1>NAIF TRADING BOT — VIP</h1><div class="sub">صفحة مقفلة — أدخل الرقم السري</div></div></div>
+    <div style="margin-top:10px" class="row">
+      <div style="flex:2">
+        <label>الرقم السري</label>
+        <input id="pwd" type="password" placeholder="••••" />
+      </div>
+      <div style="flex:1">
+        <button id="loginBtn" onclick="unlock()">دخول</button>
+      </div>
+    </div>
+    <div id="loginMsg" class="muted" style="margin-top:6px"></div>
+  </div>
+
+  <!-- Main -->
+  <div id="main" style="display:none">
+    <div class="card">
+      <div class="brand"><div class="logo" id="logo2" title="انقر مرتين لتصفير العدّاد (مخفي)"><span>NT</span></div><div><h1>NAIF TRADING BOT — إشارات متقدمة</h1><div class="sub">RSI + MACD + PriceAction/EMA14 + Trend(EMA50/200) + BBANDS + ADX + ATR%</div></div></div>
+
+      <!-- Theme & colors -->
+      <div class="toolbar">
+        <button id="themeBtn" onclick="toggleTheme()">🌓 الوضع: غامق/فاتح</button>
+      </div>
+      <div class="colorbox">
+        <div class="swatch"><label>Accent</label><input type="color" id="cAccent" value="#1e88e5" onchange="setAccent(this.value)" /></div>
+        <div class="swatch"><label>Gold</label><input type="color" id="cGold" value="#ffd54f" onchange="setGold(this.value)" /></div>
+      </div>
+
+      <div class="grid2">
+        <div>
+          <label>الأصل</label>
+          <select id="pairSelect">
+            <option value="" selected disabled>اختر أصلًا</option>
+            <optgroup label="الأزواج الرئيسية">
+          <option value="EUR/USD">🇪🇺 EUR / 🇺🇸 USD — EUR/USD</option>
+          <option value="GBP/USD">🇬🇧 GBP / 🇺🇸 USD — GBP/USD</option>
+          <option value="USD/JPY">🇺🇸 USD / 🇯🇵 JPY — USD/JPY</option>
+          <option value="USD/CHF">🇺🇸 USD / 🇨🇭 CHF — USD/CHF</option>
+          <option value="USD/CAD">🇺🇸 USD / 🇨🇦 CAD — USD/CAD</option>
+          <option value="AUD/USD">🇦🇺 AUD / 🇺🇸 USD — AUD/USD</option>
+          <option value="NZD/USD">🇳🇿 NZD / 🇺🇸 USD — NZD/USD</option>
+            </optgroup>
+            <optgroup label="الأزواج الثانوية + CNH/HKD">
+          <option value="EUR/GBP">🇪🇺 EUR / 🇬🇧 GBP — EUR/GBP</option>
+          <option value="EUR/JPY">🇪🇺 EUR / 🇯🇵 JPY — EUR/JPY</option>
+          <option value="GBP/JPY">🇬🇧 GBP / 🇯🇵 JPY — GBP/JPY</option>
+          <option value="EUR/CHF">🇪🇺 EUR / 🇨🇭 CHF — EUR/CHF</option>
+          <option value="CAD/JPY">🇨🇦 CAD / 🇯🇵 JPY — CAD/JPY</option>
+          <option value="AUD/JPY">🇦🇺 AUD / 🇯🇵 JPY — AUD/JPY</option>
+          <option value="NZD/JPY">🇳🇿 NZD / 🇯🇵 JPY — NZD/JPY</option>
+          <option value="GBP/CHF">🇬🇧 GBP / 🇨🇭 CHF — GBP/CHF</option>
+          <option value="EUR/AUD">🇪🇺 EUR / 🇦🇺 AUD — EUR/AUD</option>
+          <option value="EUR/CAD">🇪🇺 EUR / 🇨🇦 CAD — EUR/CAD</option>
+          <option value="AUD/CAD">🇦🇺 AUD / 🇨🇦 CAD — AUD/CAD</option>
+          <option value="AUD/NZD">🇦🇺 AUD / 🇳🇿 NZD — AUD/NZD</option>
+          <option value="CHF/JPY">🇨🇭 CHF / 🇯🇵 JPY — CHF/JPY</option>
+          <option value="EUR/NZD">🇪🇺 EUR / 🇳🇿 NZD — EUR/NZD</option>
+          <option value="GBP/CAD">🇬🇧 GBP / 🇨🇦 CAD — GBP/CAD</option>
+          <option value="GBP/AUD">🇬🇧 GBP / 🇦🇺 AUD — GBP/AUD</option>
+          <option value="NZD/CHF">🇳🇿 NZD / 🇨🇭 CHF — NZD/CHF</option>
+          <option value="USD/SEK">🇺🇸 USD / 🇸🇪 SEK — USD/SEK</option>
+          <option value="USD/NOK">🇺🇸 USD / 🇳🇴 NOK — USD/NOK</option>
+          <option value="USD/TRY">🇺🇸 USD / 🇹🇷 TRY — USD/TRY</option>
+          <option value="USD/ZAR">🇺🇸 USD / 🇿🇦 ZAR — USD/ZAR</option>
+          <option value="USD/CNH">🇺🇸 USD / 🇨🇳 CNH — USD/CNH</option>
+          <option value="EUR/CNH">🇪🇺 EUR / 🇨🇳 CNH — EUR/CNH</option>
+          <option value="USD/HKD">🇺🇸 USD / 🇭🇰 HKD — USD/HKD</option>
+          <option value="HKD/JPY">🇭🇰 HKD / 🇯🇵 JPY — HKD/JPY</option>
+            </optgroup>
+            <optgroup label="المعادن">
+          <option value="XAU/USD">🥇 XAU / 🇺🇸 USD — XAU/USD</option>
+          <option value="XAG/USD">🥈 XAG / 🇺🇸 USD — XAG/USD</option>
+            </optgroup>
+            <optgroup label="العملات الرقمية">
+          <option value="BTC/USD">₿ BTC / 🇺🇸 USD — BTC/USD</option>
+          <option value="ETH/USD">Ξ ETH / 🇺🇸 USD — ETH/USD</option>
+          <option value="LTC/USD">Ł LTC / 🇺🇸 USD — LTC/USD</option>
+          <option value="XRP/USD">✕ XRP / 🇺🇸 USD — XRP/USD</option>
+            </optgroup>
+            <optgroup label="المؤشرات">
+          <option value="SPX">🇺🇸 S&P 500 — SPX</option>
+          <option value="NDX">🇺🇸 Nasdaq 100 — NDX</option>
+          <option value="DJI">🇺🇸 Dow 30 — DJI</option>
+          <option value="DAX">🇩🇪 DAX 40 — DAX</option>
+          <option value="FTSE">🇬🇧 FTSE 100 — FTSE</option>
+          <option value="N225">🇯🇵 Nikkei 225 — N225</option>
+          <option value="HSI">🇭🇰 Hang Seng — HSI</option>
+            </optgroup>
+            <optgroup label="الطاقة (نفط)">
+          <option value="XTI/USD">XTI XTI / 🇺🇸 USD — XTI/USD</option>
+          <option value="XBR/USD">XBR XBR / 🇺🇸 USD — XBR/USD</option>
+            </optgroup>
+          </select>
+        </div>
+        <div>
+          <label>الإطار الزمني</label>
+          <select id="tfSelect">
+            <option value="1min" selected>1 دقيقة</option>
+            <option value="5min">5 دقائق</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div>
+          <label>زمن الانتهاء</label>
+          <select id="expSelect">
+            <option value="5" selected>5 دقائق</option>
+            <option value="1">1 دقيقة</option>
+            <option value="3">3 دقائق</option>
+            <option value="10">10 دقائق</option>
+          </select>
+        </div>
+        <div>
+          <label>تنبيه قبل الدخول</label>
+          <select id="preAlertSelect">
+            <option value="10" selected>10 ثوانٍ</option>
+            <option value="5">5 ثوانٍ</option>
+            <option value="0">بدون</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div>
+          <label>ADX الفترة</label>
+          <select id="adxSelect">
+            <option value="14" selected>ADX(14)</option>
+            <option value="7">ADX(7)</option>
+            <option value="20">ADX(20)</option>
+          </select>
+        </div>
+        <div>
+          <label>BBANDS k</label>
+          <select id="bbkSelect">
+            <option value="2.0" selected>k = 2.0</option>
+            <option value="2.5">k = 2.5</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div>
+          <label>بوابة ATR%</label>
+          <select id="atrModeSelect">
+            <option value="dynamic" selected>ديناميكي (مع المتوسط)</option>
+            <option value="tf">حسب الإطار (أشد)</option>
+          </select>
+        </div>
+        <div>
+          <label>قاعدة الدخول</label>
+          <select id="entryDelaySelect">
+            <option value="0">الدخول عند الثانية 00 بالضبط</option>
+            <option value="5">الدخول بعد 5 ثوانٍ من 00</option>
+            <option value="10" selected>الدخول بعد 10 ثوانٍ من 00</option>
+            <option value="15">الدخول بعد 15 ثانية من 00</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:8px">
+        <div style="flex:1"><button id="analyzeBtn" onclick="analyze()">🔍 تحليل</button></div>
+        <div style="flex:1"><div class="muted" id="quotaBox" style="text-align:center">—</div></div>
+      </div>
+
+      <div class="result" id="out">📊 لا توجد نتائج بعد.</div>
+      <div class="muted" style="margin-top:8px; text-align:center">© جميع الحقوق محفوظة — <b>NAIF TRADING BOT</b> • <b>@najran2015</b></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== KSA Clock =====
+function updateClock(){
+  const now = new Date();
+  const sa = new Date(now.toLocaleString('en-US', {timeZone:'Asia/Riyadh'}));
+  const pad = n=> String(n).padStart(2,'0');
+  document.getElementById('ksaClock').textContent = pad(sa.getHours())+':'+pad(sa.getMinutes())+':'+pad(sa.getSeconds())+' +03';
+}
+setInterval(updateClock, 1000); updateClock();
+
+// ===== Theme & colors =====
+function toggleTheme(){
+  const el=document.documentElement;
+  el.setAttribute('data-theme', el.getAttribute('data-theme')==='light'?'dark':'light');
+}
+function setAccent(v){ document.documentElement.style.setProperty('--accent', v); }
+function setGold(v){ document.documentElement.style.setProperty('--gold', v); }
+
+// ===== WebAudio simple beeps =====
+let audioCtx = null;
+function beep(freq=880, ms=120, type='sine'){ try{ if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); const o=audioCtx.createOscillator(); const g=audioCtx.createGain(); o.type=type; o.frequency.value=freq; o.connect(g); g.connect(audioCtx.destination); g.gain.setValueAtTime(0.0001, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.2, audioCtx.currentTime+0.01); o.start(); setTimeout(()=>{ g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime+0.05); o.stop(audioCtx.currentTime+0.06); }, ms); }catch(e){} }
+function clickSound(){ beep(660, 60, 'square'); }
+document.addEventListener('click', ()=>{ try{ if(audioCtx) audioCtx.resume(); }catch(e){} }, {once:true});
+
+// ===== Login with PBKDF2 =====
+const LOGIN_SALT_HEX = "2ec74619dfe11c1633341dcf2260387c";
+const LOGIN_ITER = 200000;
+const LOGIN_EXPECT_HEX = "ef67a2a2764258b6b24177e0ea02dc5bc984754ec93f0d63af04e5b6fbfa6868";
+
+// API recovery (PBKDF2 key XOR)
+const API_SALT_HEX = "906dd53c40fc524fde9c520e38cbae2d";
+const API_ITER = 200000;
+const API_OBF_HEX = "88bc4044526cb6415315f6ebcf630e981941a45c40fec453b701a668a4b2da91";
+let API_KEY = null;
+
+async function pbkdf2Hex(pwd, saltHex, iter){
+  const enc = new TextEncoder();
+  const mat = await crypto.subtle.importKey('raw', enc.encode(pwd), 'PBKDF2', false, ['deriveBits']);
+  const salt = hexToBytes(saltHex);
+  const bits = await crypto.subtle.deriveBits({name:'PBKDF2', salt, iterations:iter, hash:'SHA-256'}, mat, 256);
+  return buf2hex(bits);
+}
+async function pbkdf2Raw(pwd, saltHex, iter){
+  const enc = new TextEncoder();
+  const mat = await crypto.subtle.importKey('raw', enc.encode(pwd), 'PBKDF2', false, ['deriveBits']);
+  const salt = hexToBytes(saltHex);
+  const bits = await crypto.subtle.deriveBits({name:'PBKDF2', salt, iterations:iter, hash:'SHA-256'}, mat, 256);
+  return new Uint8Array(bits);
+}
+function hexToBytes(hex){ const arr = new Uint8Array(hex.length/2); for(let i=0;i<arr.length;i++) arr[i]=parseInt(hex.substr(i*2,2),16); return arr; }
+function buf2hex(buf){ const b = new Uint8Array(buf); let s=''; for(let i=0;i<b.length;i++) s+=b[i].toString(16).padStart(2,'0'); return s; }
+
+async function unlock(){
+  clickSound();
+  const input=(document.getElementById('pwd').value||'').trim();
+  const msg=document.getElementById('loginMsg');
+  if(!input){ msg.innerHTML='<span class="bad">⚠️ أدخل الرقم السري.</span>'; return; }
+  msg.textContent='⌛ جاري التحقق...';
+  try{
+    const hex=await pbkdf2Hex(input, LOGIN_SALT_HEX, LOGIN_ITER);
+    if(hex===LOGIN_EXPECT_HEX){
+      const keyBytes=await pbkdf2Raw(input, API_SALT_HEX, API_ITER);
+      const obf=hexToBytes(API_OBF_HEX);
+      let plain=new Uint8Array(obf.length);
+      for(let i=0;i<obf.length;i++) plain[i]=obf[i]^keyBytes[i%keyBytes.length];
+      API_KEY=new TextDecoder().decode(plain);
+
+      document.getElementById('loginCard').style.display='none';
+      document.getElementById('main').style.display='block';
+      msg.innerHTML='<span class="ok">✅ تم فتح الصفحة.</span>';
+      updateQuotaUI();
+    } else { msg.innerHTML='<span class="bad">❌ غير صحيح.</span>'; }
+  }catch(e){ msg.innerHTML='<span class="bad">⚠️ خطأ في المتصفح.</span>'; }
+}
+
+// ===== Hidden reset: double-click logo or Ctrl+Alt+R =====
+document.getElementById('logo2').addEventListener('dblclick', ()=>{ if(confirm('تأكيد تصفير العدّاد لليوم؟')) resetDaily(); });
+document.addEventListener('keydown', e=>{ if(e.ctrlKey && e.altKey && (e.key==='r' || e.key==='R')){ if(confirm('تأكيد تصفير العدّاد لليوم؟')) resetDaily(); } });
+
+// ===== Quota/Cooldown =====
+const QUOTA_MAX=30, COOLDOWN_MS=5*60*1000; const KEY='NAIF_QUOTA';
+const STORE={date:'',count:0,last_ts:0};
+function todayStr(){ const sa=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Riyadh'})); return sa.toISOString().slice(0,10); }
+function loadQuota(){ try{ const o=JSON.parse(localStorage.getItem(KEY)||'null'); if(o) return o; }catch(e){} return {...STORE}; }
+function saveQuota(o){ localStorage.setItem(KEY, JSON.stringify(o)); }
+function resetDaily(){ const o={...STORE, date:todayStr(), count:0, last_ts:0}; saveQuota(o); updateQuotaUI(); clickSound(); document.getElementById('out').textContent='✅ تم تصفير عدّاد اليوم.'; }
+function updateQuotaUI(){ let o=loadQuota(); const t=todayStr(); if(o.date!==t) o={...STORE, date:t}; const next=Math.max(0,(o.last_ts+COOLDOWN_MS)-Date.now()); const m=Math.floor(next/60000), s=Math.floor((next%60000)/1000); const rest=next>0?` | انتظار: ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:''; document.getElementById('quotaBox').textContent=`اليوم: ${o.count} / 30${rest}`; } setInterval(updateQuotaUI,1000);
+
+// ===== Indicators =====
+function sma(a,p){ if(a.length<p) return a.map(_=>a[0]); let out=[],sum=0; for(let i=0;i<a.length;i++){ sum+=a[i]; if(i>=p) sum-=a[i-p]; out.push(i>=p-1? sum/p : a[i]); } return out; }
+function ema(a,p){ const k=2/(p+1); let out=[],prev=a[0]; for(let i=0;i<a.length;i++){ const v=a[i]; if(i===0) out.push(prev); else { prev=v*k+prev*(1-k); out.push(prev); } } return out; }
+function rsi(c,p=14){ let g=[],l=[]; for(let i=1;i<c.length;i++){ const d=c[i]-c[i-1]; g.push(Math.max(0,d)); l.push(Math.max(0,-d)); } const a=1/p; let G=0,L=0; let out=Array(c.length).fill(50); for(let i=0;i<g.length;i++){ G=a*g[i]+(1-a)*G; L=a*l[i]+(1-a)*L; const rs=L===0?99:G/L; out[i+1]=100-(100/(1+rs)); } return out; }
+function macd(c, f=12, s=26, sig=9){ const ef=ema(c,f), es=ema(c,s); const line=c.map((_,i)=>ef[i]-es[i]); const sg=ema(line,sig); const h=line.map((v,i)=>v-sg[i]); return {line:line,sig:sg,hist:h}; }
+function atr(h,l,c,p=14){ let trs=[]; for(let i=1;i<c.length;i++){ const tr=Math.max(h[i]-l[i],Math.abs(h[i]-c[i-1]),Math.abs(l[i]-c[i-1])); trs.push(tr); } const a=1/p; let out=[...Array(c.length).fill(0)], avg=0; for(let i=0;i<trs.length;i++){ avg=a*trs[i]+(1-a)*avg; out[i+1]=avg; } return out; }
+function adx(h,l,c,p=14){ const n=h.length; let pDM=Array(n).fill(0), mDM=Array(n).fill(0), TR=Array(n).fill(0); for(let i=1;i<n;i++){ const up=h[i]-h[i-1]; const dn=l[i-1]-l[i]; pDM[i]=(up>dn&&up>0)?up:0; mDM[i]=(dn>up&&dn>0)?dn:0; TR[i]=Math.max(h[i]-l[i],Math.abs(h[i]-c[i-1]),Math.abs(l[i]-c[i-1])); } function smooth(arr){ const out=Array(n).fill(0); let s=0; for(let i=1;i<=p&&i<n;i++) s+=arr[i]; out[p]=s; for(let i=p+1;i<n;i++) out[i]=out[i-1]-out[i-1]/p+arr[i]; return out; } const trS=smooth(TR), pS=smooth(pDM), mS=smooth(mDM); let pDI=Array(n).fill(0), mDI=Array(n).fill(0), DX=Array(n).fill(0); for(let i=p;i<n;i++){ pDI[i]=100*(pS[i]/trS[i]); mDI[i]=100*(mS[i]/trS[i]); DX[i]=100*Math.abs(pDI[i]-mDI[i])/(pDI[i]+mDI[i]||1); } const adxArr=Array(n).fill(0); let sumDX=0; for(let i=p;i<p*2&&i<n;i++) sumDX+=DX[i]; adxArr[p*2-1]=sumDX/p; for(let i=p*2;i<n;i++) adxArr[i]=(adxArr[i-1]*(p-1)+DX[i])/p; return {plusDI:pDI, minusDI:mDI, ADX:adxArr}; }
+function bbands(c,period=20,k=2){ const mid=sma(c,period); let up=[],low=[]; for(let i=0;i<c.length;i++){ const st=Math.max(0,i-period+1); const win=c.slice(st,i+1); const m=mid[i]; const v=win.reduce((a,x)=>a+(x-m)*(x-m),0)/Math.max(1,win.length); const sd=Math.sqrt(v); up.push(m+k*sd); low.push(m-k*sd); } return {mid,up,low}; }
+
+// ===== Data fetch =====
+async function fetchSeries(symbol, interval, outputsize=240){
+  const url = `https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(symbol)}&interval=${interval}&outputsize=${outputsize}&format=JSON&apikey=${encodeURIComponent(API_KEY)}`;
+  const r = await fetch(url, {cache:'no-store'});
+  const j = await r.json();
+  if(j.status==='error') throw new Error(j.message||'API error');
+  const values=(j.values||[]).slice().reverse(); if(values.length<80) throw new Error('بيانات غير كافية');
+  const opens=values.map(v=>+v.open), highs=values.map(v=>+v.high), lows=values.map(v=>+v.low), closes=values.map(v=>+v.close);
+  return {opens,highs,lows,closes,meta:j.meta};
+}
+
+// ===== Decision =====
+function decide(opens,highs,lows,closes, bbK=2.0, adxP=14, atrMode='dynamic', tf='1min'){
+  const i=closes.length-1;
+  const ema14=ema(closes,14), ema50=ema(closes,50), ema200=ema(closes,200);
+  const rsiArr=rsi(closes,14); const mac=macd(closes);
+  const atrArr=atr(highs,lows,closes,14);
+  const bb=bbands(closes,20,bbK); const ax=adx(highs,lows,closes,adxP);
+
+  const price=closes[i]; const rsiV=rsiArr[i]; const hist=mac.hist[i];
+  const pa=(price>ema14[i] && price>opens[i])?'CALL':(price<ema14[i] && price<opens[i])?'PUT':'NEUTRAL';
+  const trend=ema50[i]>ema200[i]?'UP':'DOWN';
+
+  // ATR%
+  const atrp=(atrArr[i]/price)*100;
+  const atrpSeries=atrArr.map((a,idx)=> (a/Math.max(1e-9,closes[idx]))*100 );
+  const atrpAvg=sma(atrpSeries,20)[i];
+  let atrOk=false;
+  if(atrMode==='tf'){
+    const tfMin={'1min':0.03,'5min':0.06}[tf]||0.03; // percent
+    atrOk = atrp >= tfMin;
+  } else {
+    atrOk = atrp >= Math.max(0.02, atrpAvg*0.85);
+  }
+
+  const bbVote = price <= bb.low[i] ? 'CALL' : price >= bb.up[i] ? 'PUT' : 'NEUTRAL';
+  const rsiVote = rsiV<=30?'CALL': rsiV>=70?'PUT':'NEUTRAL';
+  const macVote = hist>0?'CALL':'PUT';
+  const trendVote = trend==='UP'?'CALL':'PUT';
+
+  const adxV = ax.ADX[i]; const adxOk = adxV>=18;
+  const votes=[rsiVote, macVote, pa, trendVote, bbVote];
+  const callVotes=votes.filter(v=>v==='CALL').length, putVotes=votes.filter(v=>v==='PUT').length;
+
+  let direction='NEUTRAL', confidence=50;
+  if(atrOk && adxOk){ if(callVotes>=3){ direction='CALL'; confidence = callVotes>=4? 92: 80; } else if(putVotes>=3){ direction='PUT'; confidence = putVotes>=4? 92: 80; } }
+  return {direction, confidence, details:{rsi:rsiV, macd_hist:hist, pa, trend, bbVote, bbLow:bb.low[i], bbUp:bb.up[i], atrp, atrpAvg, atrOk, adx:adxV, adxOk, votes, bbK, adxP, atrMode} };
+}
+
+// ===== Pre-entry beeps (countdown) =====
+let countdownTimer=null;
+function schedulePreAlert(entryTs, preSec){
+  clearInterval(countdownTimer);
+  if(preSec<=0) return;
+  countdownTimer=setInterval(()=>{
+    const now=Date.now(); const diff=Math.floor((entryTs-now)/1000);
+    if(diff<=0){ clearInterval(countdownTimer); beep(880,160,'sawtooth'); return; }
+    if(diff<=preSec) beep(880-(preSec-diff)*20, 90, 'square');
+  },1000);
+}
+
+// ===== Analyze =====
+async function analyze(){
+  clickSound();
+  if(!API_KEY){ alert('لست مسجل دخول'); return; }
+  let o=loadQuota(); const t=todayStr(); if(o.date!==t) o={ date:t, count:0, last_ts:0 };
+  if(o.count>=30){ document.getElementById('out').textContent='❌ وصلت للحد اليومي (30 صفقة)'; return; }
+  const remain=(o.last_ts+5*60*1000)-Date.now(); if(remain>0){ const mm=Math.floor(remain/60000), ss=Math.floor((remain%60000)/1000); document.getElementById('out').textContent='⏳ يجب الانتظار '+String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0')+' قبل الإشارة التالية.'; return; }
+
+  const pairEl=document.getElementById('pairSelect');
+  const pair=pairEl.value;
+  const pairLabel=pairEl.options[pairEl.selectedIndex].text;
+  const tf=document.getElementById('tfSelect').value;
+  const exp=parseInt(document.getElementById('expSelect').value||'5',10);
+  const preSec=parseInt(document.getElementById('preAlertSelect').value||'10',10);
+  const adxP=parseInt(document.getElementById('adxSelect').value||'14',10);
+  const bbK=parseFloat(document.getElementById('bbkSelect').value||'2.0');
+  const atrMode=document.getElementById('atrModeSelect').value;
+  const entryDelay=parseInt(document.getElementById('entryDelaySelect').value||'10',10);
+
+  const out=document.getElementById('out');
+  if(!pair){ alert('اختر أصلًا'); return; }
+  out.textContent='⏳ جاري التحليل...';
+
+  let symbol=pair;
+  if(pair==='GOLD/USD') symbol='XAU/USD';
+
+  try{
+    const s=await fetchSeries(symbol, tf, 360);
+    const d=decide(s.opens,s.highs,s.lows,s.closes, bbK, adxP, atrMode, tf);
+    const saNow=new Date(new Date().toLocaleString('en-US', {timeZone:'Asia/Riyadh'}));
+    const entry=new Date(saNow.getTime());
+    entry.setMinutes(entry.getMinutes()+1); entry.setSeconds(0); entry.setMilliseconds(0);
+    entry.setSeconds(entry.getSeconds()+entryDelay); // delay after 00
+    const mg1=new Date(entry.getTime()+exp*60000), mg2=new Date(entry.getTime()+exp*120000);
+    const fmt=dt=> dt.toLocaleTimeString('ar-EG', {hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,timeZone:'Asia/Riyadh'});
+    const today=saNow.toLocaleDateString('ar-EG', {year:'numeric',month:'2-digit',day:'2-digit',timeZone:'Asia/Riyadh'});
+
+    if(d.direction==='NEUTRAL'){
+      out.textContent = `ℹ️ لا توجد إشارة مؤكدة الآن (لم تتحقق الشروط).
+الأصل: ${pairLabel}
+الإطار: ${tf}
+الإعدادات: ADX(${d.details.adxP}) • BB k=${d.details.bbK} • ATR=${d.details.atrMode}
+ATR%: ${d.details.atrp.toFixed(3)} (متوسط: ${d.details.atrpAvg.toFixed(3)}) — ATR OK: ${d.details.atrOk?'✅':'❌'}
+ADX: ${d.details.adx.toFixed(2)} — ADX OK: ${d.details.adxOk?'✅':'❌'}
+التاريخ: ${today} 🇸🇦`;
+      return;
+    }
+
+    const dirIcon = d.direction==='CALL' ? '🟩 شراء' : '🟥 بيع';
+    out.textContent = `${pairLabel}
+🕘 انتهاء الصلاحية ${exp} دقائق
+⏺️ دخول عند ${fmt(entry)}
+${dirIcon}
+
+📊 المؤشرات (3 من 5) + ATR% + ADX:
+• RSI(14): ${d.details.rsi.toFixed(2)} → ${d.details.rsi<=30?'CALL': d.details.rsi>=70?'PUT':'محايد'}
+• MACD hist: ${d.details.macd_hist.toFixed(5)} → ${d.details.macd_hist>0?'CALL':'PUT'}
+• Price Action/EMA14: ${d.details.pa}
+• Trend EMA(50/200): ${d.details.trend==='UP'?'CALL':'PUT'}
+• BBANDS(20, ${d.details.bbK}): ${d.details.bbVote}
+• ATR%: ${d.details.atrp.toFixed(3)} (متوسط 20: ${d.details.atrpAvg.toFixed(3)}) → ${d.details.atrOk?'✅ OK':'❌ منخفض'}
+• ADX(${d.details.adxP}): ${d.details.adx.toFixed(2)} → ${d.details.adxOk?'✅ قوي':'❌ ضعيف'}
+
+✅ قوة الإشارة: ${d.confidence}%
+
+🛡️ مستويات الحماية:
+1️⃣ ${fmt(mg1)}
+2️⃣ ${fmt(mg2)}
+
+📅 التاريخ: ${today} 🇸🇦`;
+
+    // success -> quota & cooldown, schedule pre-alert beeps
+    o.count+=1; o.last_ts=Date.now(); saveQuota(o); updateQuotaUI();
+    schedulePreAlert(entry.getTime(), preSec);
+
+  }catch(e){ out.textContent='❌ خطأ في جلب البيانات: '+e.message; }
+}
+
+// ===== Prevent easy inspection (best-effort) =====
+document.addEventListener('contextmenu', e=>e.preventDefault());
+document.addEventListener('keydown', e=>{ const k=e.key?.toLowerCase(); if((e.ctrlKey&&(k==='u'||k==='s'||k==='p'||k==='j'))||(e.key==='F12')) e.preventDefault(); });
+</script>
+</body>
+</html>
