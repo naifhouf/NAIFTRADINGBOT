@@ -1,0 +1,165 @@
+document.getElementById("bgVideo").playbackRate = 0.5;
+
+// Password Validation
+document.getElementById("passwordBtn").addEventListener("click", royalUnlock);
+
+// تأثيرات عند الضغط على Enter
+document.getElementById("passwordInput").addEventListener("keyup", function(e) {
+    if (e.key === "Enter") royalUnlock();
+});
+
+function royalUnlock() {
+    const password = document.getElementById("passwordInput").value;
+    const passwordScreen = document.getElementById("passwordScreen");
+    const errorMsg = document.getElementById("passwordError");
+    const castle = document.querySelector(".password-castle");
+    const button = document.getElementById("passwordBtn");
+    
+    // إنشاء الشرارات
+    createSparkles(button);
+    
+    if (password === "Kiser") {
+        // تأثير النجاح
+        castle.style.animation = "unlockSuccess 1s";
+        errorMsg.textContent = "";
+        
+        // تأثير الاختفاء الملكي
+        setTimeout(() => {
+            passwordScreen.style.opacity = "0";
+            passwordScreen.style.transform = "scale(1.2)";
+            passwordScreen.style.transition = "all 0.7s ease-in-out";
+            
+            setTimeout(() => {
+                passwordScreen.style.display = "none";
+                document.querySelector(".container").style.display = "block";
+            }, 700);
+        }, 1000);
+    } else {
+        // تأثير الخطأ
+        castle.style.animation = "shakeError 0.5s";
+        errorMsg.textContent = "Wrong password!";
+        
+        // تأثير اهتزاز القلعة
+        setTimeout(() => {
+            castle.style.animation = "";
+        }, 500);
+    }
+}
+
+function createSparkles(element) {
+    const rect = element.getBoundingClientRect();
+    const sparkles = element.querySelectorAll(".sparkle");
+    
+    sparkles.forEach(sparkle => {
+        // إعادة تعيين المواضع
+        sparkle.style.width = `${Math.random() * 10 + 5}px`;
+        sparkle.style.height = sparkle.style.width;
+        sparkle.style.left = `${Math.random() * rect.width}px`;
+        sparkle.style.top = `${Math.random() * rect.height}px`;
+        
+        // تأثير الشرارة
+        sparkle.style.opacity = "1";
+        sparkle.style.transform = "scale(0)";
+        sparkle.style.transition = "all 0s";
+        
+        setTimeout(() => {
+            sparkle.style.transform = "scale(1)";
+            sparkle.style.transition = "all 0.3s ease-out";
+        }, 10);
+        
+        setTimeout(() => {
+            sparkle.style.opacity = "0";
+            sparkle.style.transform = `translate(${Math.random() * 40 - 20}px, ${Math.random() * 40 - 20}px) scale(0)`;
+        }, 300);
+    });
+}
+
+// إنشاء نجوم متحركة في الخلفية
+document.addEventListener("DOMContentLoaded", () => {
+    const kingdom = document.querySelector(".password-kingdom");
+    
+    for (let i = 0; i < 20; i++) {
+        const star = document.createElement("div");
+        star.className = "floating-star";
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.width = `${Math.random() * 3 + 1}px`;
+        star.style.height = star.style.width;
+        star.style.animationDelay = `${Math.random() * 5}s`;
+        kingdom.appendChild(star);
+    }
+});
+
+// Signal Button
+document.getElementById("getSignal").addEventListener("click", function () {
+    let button = document.getElementById("getSignal");
+    let timerDisplay = document.getElementById("timer");
+    let signalOutput = document.getElementById("signalOutput");
+
+    button.disabled = true;
+    button.classList.add("disabled");
+    timerDisplay.innerHTML = "Analyzing the Market...";
+    
+    let delay = Math.floor(Math.random() * (5000 - 2000 + 1)) + 2000;
+    
+    setTimeout(() => {
+        let signal = Math.random() < 0.5 ? "BUY" : "SELL";
+        signalOutput.innerHTML = signal;
+        signalOutput.className = signal === "BUY" ? "buy" : "sell";
+        signalOutput.style.opacity = "1";
+
+        setTimeout(() => {
+            signalOutput.style.opacity = "0"; // Hide after 3 seconds
+        }, 3000);
+
+        let selectedTime = parseInt(document.getElementById("timeSelect").value);
+        let remainingTime = selectedTime;
+
+        let interval = setInterval(() => {
+            timerDisplay.innerHTML = `Next Signal in: ${remainingTime}s`;
+            remainingTime--;
+
+            if (remainingTime < 0) {
+                clearInterval(interval);
+                button.disabled = false;
+                button.classList.remove("disabled");
+                timerDisplay.innerHTML = "";
+            }
+        }, 1000);
+    }, delay);
+});
+// Toggle Dropdown
+document.getElementById("platformBtn").addEventListener("click", function (event) {
+    event.stopPropagation(); // Prevents the event from closing immediately
+    let dropdown = document.getElementById("platformList");
+    dropdown.classList.toggle("show");
+});
+
+// Close dropdown when clicking outside
+document.addEventListener("click", function (event) {
+    let dropdown = document.getElementById("platformList");
+    if (!document.querySelector(".custom-dropdown").contains(event.target)) {
+        dropdown.classList.remove("show");
+    }
+});
+
+// Handle Selection
+document.querySelectorAll(".dropdown-item").forEach(item => {
+    item.addEventListener("click", function () {
+        let selectedText = this.textContent.trim();
+        let selectedImg = this.getAttribute("data-img");
+
+        document.getElementById("platformIcon").src = selectedImg;
+        document.getElementById("platformText").textContent = selectedText;
+        document.getElementById("platformSelect").value = this.getAttribute("data-value");
+
+        document.getElementById("platformList").classList.remove("show");
+    });
+});
+
+// Set Default Value (Quotex)
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("platformIcon").src = "qu.png";
+    document.getElementById("platformText").textContent = "QUOTEX";
+    document.getElementById("platformSelect").value = "quotex";
+});
