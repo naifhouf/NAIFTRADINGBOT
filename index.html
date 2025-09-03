@@ -1,12 +1,12 @@
 
-<!-- index.html -->
+<!-- naif_trader_fx_only_locked.html -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" data-theme="dark">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>NAIF TRADING BOT — VIP (Ultra)</title>
-<meta name="description" content="Forex/Metals/Crypto/Indices/Oil Signals (UTC+3) — NAIF TRADING BOT" />
+<title>NAIF TRADING BOT — FX Only</title>
+<meta name="description" content="Forex + Gold/Silver + Bitcoin Signals (UTC+3) — NAIF TRADING BOT" />
 <meta name="author" content="@najran2015" />
 <style>
   :root{
@@ -29,7 +29,7 @@
   }
   .wm{ position:fixed; inset:0; pointer-events:none; display:flex; align-items:center; justify-content:center; opacity:.08; z-index:0; }
   .wm span{ font-size:10vw; font-weight:900; letter-spacing:4px; text-transform:uppercase; color:#000; filter:contrast(150%) blur(.2px); }
-  .wrap{ position:relative; z-index:1; max-width:1024px; margin:0 auto; }
+  .wrap{ position:relative; z-index:1; max-width:960px; margin:0 auto; }
   .brand{ display:flex; align-items:center; gap:10px; justify-content:center; margin-bottom:8px }
   .logo{ width:56px; height:56px; border-radius:16px; background: radial-gradient(60% 60% at 20% 20%, #333, #111);
           border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-weight:900; letter-spacing:.5px; user-select:none; cursor:pointer; }
@@ -81,7 +81,7 @@
   <!-- Main -->
   <div id="main" style="display:none">
     <div class="card">
-      <div class="brand"><div class="logo" id="logo2" title="انقر مرتين لتصفير العدّاد (مخفي)"><span>NT</span></div><div><h1>NAIF TRADING BOT — إشارات متقدمة</h1><div class="sub">RSI + MACD + PriceAction/EMA14 + Trend(EMA50/200) + BBANDS + ADX + ATR%</div></div></div>
+      <div class="brand"><div class="logo" id="logo2" title="انقر مرتين لتصفير العدّاد (مخفي)"><span>NT</span></div><div><h1>NAIF TRADING BOT — إشارات فوركس فقط</h1><div class="sub">أزواج فوركس + ذهب/فضة + بتكوين</div></div></div>
 
       <!-- Theme & colors -->
       <div class="toolbar">
@@ -98,63 +98,47 @@
           <select id="pairSelect">
             <option value="" selected disabled>اختر أصلًا</option>
             <optgroup label="الأزواج الرئيسية">
-          <option value="EUR/USD">🇪🇺 EUR / 🇺🇸 USD — EUR/USD</option>
-          <option value="GBP/USD">🇬🇧 GBP / 🇺🇸 USD — GBP/USD</option>
-          <option value="USD/JPY">🇺🇸 USD / 🇯🇵 JPY — USD/JPY</option>
-          <option value="USD/CHF">🇺🇸 USD / 🇨🇭 CHF — USD/CHF</option>
-          <option value="USD/CAD">🇺🇸 USD / 🇨🇦 CAD — USD/CAD</option>
-          <option value="AUD/USD">🇦🇺 AUD / 🇺🇸 USD — AUD/USD</option>
-          <option value="NZD/USD">🇳🇿 NZD / 🇺🇸 USD — NZD/USD</option>
+          <option value="EUR/USD">🇪🇺 EUR/USD 🇺🇸</option>
+          <option value="GBP/USD">🇬🇧 GBP/USD 🇺🇸</option>
+          <option value="USD/JPY">🇺🇸 USD/JPY 🇯🇵</option>
+          <option value="USD/CHF">🇺🇸 USD/CHF 🇨🇭</option>
+          <option value="USD/CAD">🇺🇸 USD/CAD 🇨🇦</option>
+          <option value="AUD/USD">🇦🇺 AUD/USD 🇺🇸</option>
+          <option value="NZD/USD">🇳🇿 NZD/USD 🇺🇸</option>
             </optgroup>
-            <optgroup label="الأزواج الثانوية + CNH/HKD">
-          <option value="EUR/GBP">🇪🇺 EUR / 🇬🇧 GBP — EUR/GBP</option>
-          <option value="EUR/JPY">🇪🇺 EUR / 🇯🇵 JPY — EUR/JPY</option>
-          <option value="GBP/JPY">🇬🇧 GBP / 🇯🇵 JPY — GBP/JPY</option>
-          <option value="EUR/CHF">🇪🇺 EUR / 🇨🇭 CHF — EUR/CHF</option>
-          <option value="CAD/JPY">🇨🇦 CAD / 🇯🇵 JPY — CAD/JPY</option>
-          <option value="AUD/JPY">🇦🇺 AUD / 🇯🇵 JPY — AUD/JPY</option>
-          <option value="NZD/JPY">🇳🇿 NZD / 🇯🇵 JPY — NZD/JPY</option>
-          <option value="GBP/CHF">🇬🇧 GBP / 🇨🇭 CHF — GBP/CHF</option>
-          <option value="EUR/AUD">🇪🇺 EUR / 🇦🇺 AUD — EUR/AUD</option>
-          <option value="EUR/CAD">🇪🇺 EUR / 🇨🇦 CAD — EUR/CAD</option>
-          <option value="AUD/CAD">🇦🇺 AUD / 🇨🇦 CAD — AUD/CAD</option>
-          <option value="AUD/NZD">🇦🇺 AUD / 🇳🇿 NZD — AUD/NZD</option>
-          <option value="CHF/JPY">🇨🇭 CHF / 🇯🇵 JPY — CHF/JPY</option>
-          <option value="EUR/NZD">🇪🇺 EUR / 🇳🇿 NZD — EUR/NZD</option>
-          <option value="GBP/CAD">🇬🇧 GBP / 🇨🇦 CAD — GBP/CAD</option>
-          <option value="GBP/AUD">🇬🇧 GBP / 🇦🇺 AUD — GBP/AUD</option>
-          <option value="NZD/CHF">🇳🇿 NZD / 🇨🇭 CHF — NZD/CHF</option>
-          <option value="USD/SEK">🇺🇸 USD / 🇸🇪 SEK — USD/SEK</option>
-          <option value="USD/NOK">🇺🇸 USD / 🇳🇴 NOK — USD/NOK</option>
-          <option value="USD/TRY">🇺🇸 USD / 🇹🇷 TRY — USD/TRY</option>
-          <option value="USD/ZAR">🇺🇸 USD / 🇿🇦 ZAR — USD/ZAR</option>
-          <option value="USD/CNH">🇺🇸 USD / 🇨🇳 CNH — USD/CNH</option>
-          <option value="EUR/CNH">🇪🇺 EUR / 🇨🇳 CNH — EUR/CNH</option>
-          <option value="USD/HKD">🇺🇸 USD / 🇭🇰 HKD — USD/HKD</option>
-          <option value="HKD/JPY">🇭🇰 HKD / 🇯🇵 JPY — HKD/JPY</option>
+            <optgroup label="الأزواج الثانوية (تشمل CNH/HKD)">
+          <option value="EUR/GBP">🇪🇺 EUR/GBP 🇬🇧</option>
+          <option value="EUR/JPY">🇪🇺 EUR/JPY 🇯🇵</option>
+          <option value="GBP/JPY">🇬🇧 GBP/JPY 🇯🇵</option>
+          <option value="EUR/CHF">🇪🇺 EUR/CHF 🇨🇭</option>
+          <option value="CAD/JPY">🇨🇦 CAD/JPY 🇯🇵</option>
+          <option value="AUD/JPY">🇦🇺 AUD/JPY 🇯🇵</option>
+          <option value="NZD/JPY">🇳🇿 NZD/JPY 🇯🇵</option>
+          <option value="GBP/CHF">🇬🇧 GBP/CHF 🇨🇭</option>
+          <option value="EUR/AUD">🇪🇺 EUR/AUD 🇦🇺</option>
+          <option value="EUR/CAD">🇪🇺 EUR/CAD 🇨🇦</option>
+          <option value="AUD/CAD">🇦🇺 AUD/CAD 🇨🇦</option>
+          <option value="AUD/NZD">🇦🇺 AUD/NZD 🇳🇿</option>
+          <option value="CHF/JPY">🇨🇭 CHF/JPY 🇯🇵</option>
+          <option value="EUR/NZD">🇪🇺 EUR/NZD 🇳🇿</option>
+          <option value="GBP/CAD">🇬🇧 GBP/CAD 🇨🇦</option>
+          <option value="GBP/AUD">🇬🇧 GBP/AUD 🇦🇺</option>
+          <option value="NZD/CHF">🇳🇿 NZD/CHF 🇨🇭</option>
+          <option value="USD/SEK">🇺🇸 USD/SEK 🇸🇪</option>
+          <option value="USD/NOK">🇺🇸 USD/NOK 🇳🇴</option>
+          <option value="USD/TRY">🇺🇸 USD/TRY 🇹🇷</option>
+          <option value="USD/ZAR">🇺🇸 USD/ZAR 🇿🇦</option>
+          <option value="USD/CNH">🇺🇸 USD/CNH 🇨🇳</option>
+          <option value="EUR/CNH">🇪🇺 EUR/CNH 🇨🇳</option>
+          <option value="USD/HKD">🇺🇸 USD/HKD 🇭🇰</option>
+          <option value="HKD/JPY">🇭🇰 HKD/JPY 🇯🇵</option>
             </optgroup>
             <optgroup label="المعادن">
-          <option value="XAU/USD">🥇 XAU / 🇺🇸 USD — XAU/USD</option>
-          <option value="XAG/USD">🥈 XAG / 🇺🇸 USD — XAG/USD</option>
+          <option value="XAU/USD">🥇 XAU/USD 🇺🇸</option>
+          <option value="XAG/USD">🥈 XAG/USD 🇺🇸</option>
             </optgroup>
-            <optgroup label="العملات الرقمية">
-          <option value="BTC/USD">₿ BTC / 🇺🇸 USD — BTC/USD</option>
-          <option value="ETH/USD">Ξ ETH / 🇺🇸 USD — ETH/USD</option>
-          <option value="LTC/USD">Ł LTC / 🇺🇸 USD — LTC/USD</option>
-          <option value="XRP/USD">✕ XRP / 🇺🇸 USD — XRP/USD</option>
-            </optgroup>
-            <optgroup label="المؤشرات">
-          <option value="SPX">🇺🇸 S&P 500 — SPX</option>
-          <option value="NDX">🇺🇸 Nasdaq 100 — NDX</option>
-          <option value="DJI">🇺🇸 Dow 30 — DJI</option>
-          <option value="DAX">🇩🇪 DAX 40 — DAX</option>
-          <option value="FTSE">🇬🇧 FTSE 100 — FTSE</option>
-          <option value="N225">🇯🇵 Nikkei 225 — N225</option>
-          <option value="HSI">🇭🇰 Hang Seng — HSI</option>
-            </optgroup>
-            <optgroup label="الطاقة (نفط)">
-          <option value="XTI/USD">XTI XTI / 🇺🇸 USD — XTI/USD</option>
-          <option value="XBR/USD">XBR XBR / 🇺🇸 USD — XBR/USD</option>
+            <optgroup label="العملات الرقمية (بتكوين)">
+          <option value="BTC/USD">₿ BTC/USD 🇺🇸</option>
             </optgroup>
           </select>
         </div>
@@ -216,10 +200,10 @@
         <div>
           <label>قاعدة الدخول</label>
           <select id="entryDelaySelect">
-            <option value="0">الدخول عند الثانية 00 بالضبط</option>
-            <option value="5">الدخول بعد 5 ثوانٍ من 00</option>
-            <option value="10" selected>الدخول بعد 10 ثوانٍ من 00</option>
-            <option value="15">الدخول بعد 15 ثانية من 00</option>
+            <option value="0">الثانية 00 بالضبط</option>
+            <option value="5">بعد 5 ثوانٍ من 00</option>
+            <option value="10" selected>بعد 10 ثوانٍ من 00</option>
+            <option value="15">بعد 15 ثانية من 00</option>
           </select>
         </div>
       </div>
@@ -253,21 +237,21 @@ function toggleTheme(){
 function setAccent(v){ document.documentElement.style.setProperty('--accent', v); }
 function setGold(v){ document.documentElement.style.setProperty('--gold', v); }
 
-// ===== WebAudio simple beeps =====
+// ===== WebAudio beeps =====
 let audioCtx = null;
 function beep(freq=880, ms=120, type='sine'){ try{ if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); const o=audioCtx.createOscillator(); const g=audioCtx.createGain(); o.type=type; o.frequency.value=freq; o.connect(g); g.connect(audioCtx.destination); g.gain.setValueAtTime(0.0001, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.2, audioCtx.currentTime+0.01); o.start(); setTimeout(()=>{ g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime+0.05); o.stop(audioCtx.currentTime+0.06); }, ms); }catch(e){} }
 function clickSound(){ beep(660, 60, 'square'); }
 document.addEventListener('click', ()=>{ try{ if(audioCtx) audioCtx.resume(); }catch(e){} }, {once:true});
 
 // ===== Login with PBKDF2 =====
-const LOGIN_SALT_HEX = "2ec74619dfe11c1633341dcf2260387c";
+const LOGIN_SALT_HEX = "be1abb1b0dbdf52a71b9a70c866b1a89";
 const LOGIN_ITER = 200000;
-const LOGIN_EXPECT_HEX = "ef67a2a2764258b6b24177e0ea02dc5bc984754ec93f0d63af04e5b6fbfa6868";
+const LOGIN_EXPECT_HEX = "5d1e3254fde74e743f5397941a0df53a53d05f8bc1e728ff43386037bd98ae2b";
 
 // API recovery (PBKDF2 key XOR)
-const API_SALT_HEX = "906dd53c40fc524fde9c520e38cbae2d";
+const API_SALT_HEX = "8783d1ed67344ffabc098abd80acb828";
 const API_ITER = 200000;
-const API_OBF_HEX = "88bc4044526cb6415315f6ebcf630e981941a45c40fec453b701a668a4b2da91";
+const API_OBF_HEX = "cd817b1771d3b88824a22a5e5f29081403fb12b60915eb6827edb141f8d01a30";
 let API_KEY = null;
 
 async function pbkdf2Hex(pwd, saltHex, iter){
@@ -381,7 +365,7 @@ function decide(opens,highs,lows,closes, bbK=2.0, adxP=14, atrMode='dynamic', tf
   return {direction, confidence, details:{rsi:rsiV, macd_hist:hist, pa, trend, bbVote, bbLow:bb.low[i], bbUp:bb.up[i], atrp, atrpAvg, atrOk, adx:adxV, adxOk, votes, bbK, adxP, atrMode} };
 }
 
-// ===== Pre-entry beeps (countdown) =====
+// ===== Pre-entry beeps =====
 let countdownTimer=null;
 function schedulePreAlert(entryTs, preSec){
   clearInterval(countdownTimer);
@@ -417,7 +401,7 @@ async function analyze(){
   out.textContent='⏳ جاري التحليل...';
 
   let symbol=pair;
-  if(pair==='GOLD/USD') symbol='XAU/USD';
+  if(pair==='GOLD/USD') symbol='XAU/USD'; // legacy case if used
 
   try{
     const s=await fetchSeries(symbol, tf, 360);
@@ -470,6 +454,10 @@ ${dirIcon}
 
   }catch(e){ out.textContent='❌ خطأ في جلب البيانات: '+e.message; }
 }
+
+// ===== Utils =====
+function hexToBytes(hex){ const arr=new Uint8Array(hex.length/2); for(let i=0;i<arr.length;i++) arr[i]=parseInt(hex.substr(i*2,2),16); return arr; }
+function buf2hex(buf){ const b=new Uint8Array(buf); let s=''; for(let i=0;i<b.length;i++) s+=b[i].toString(16).padStart(2,'0'); return s; }
 
 // ===== Prevent easy inspection (best-effort) =====
 document.addEventListener('contextmenu', e=>e.preventDefault());
