@@ -1,12 +1,12 @@
 
-<!-- naif_trader_fx_only_locked.html -->
+<!-- naif_trader_fx_mtf_pro_entry_candles_v3.html -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" data-theme="dark">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>NAIF TRADING BOT — FX Only</title>
-<meta name="description" content="Forex + Gold/Silver + Bitcoin Signals (UTC+3) — NAIF TRADING BOT" />
+<title>NAIF TRADING BOT — MTF Pro (v3)</title>
+<meta name="description" content="Forex + Metals + BTC Signals with MTF + Full Candles. Entry price live-or-lock. UTC+3." />
 <meta name="author" content="@najran2015" />
 <style>
   :root{
@@ -28,8 +28,8 @@
     color:var(--text); font-family:'Segoe UI',Tahoma,sans-serif; margin:0; padding:22px 10px;
   }
   .wm{ position:fixed; inset:0; pointer-events:none; display:flex; align-items:center; justify-content:center; opacity:.08; z-index:0; }
-  .wm span{ font-size:10vw; font-weight:900; letter-spacing:4px; text-transform:uppercase; color:#000; filter:contrast(150%) blur(.2px); }
-  .wrap{ position:relative; z-index:1; max-width:960px; margin:0 auto; }
+  .wm span{ font-size:9vw; font-weight:900; letter-spacing:4px; text-transform:uppercase; color:#000; filter:contrast(150%) blur(.2px); }
+  .wrap{ position:relative; z-index:1; max-width:1000px; margin:0 auto; }
   .brand{ display:flex; align-items:center; gap:10px; justify-content:center; margin-bottom:8px }
   .logo{ width:56px; height:56px; border-radius:16px; background: radial-gradient(60% 60% at 20% 20%, #333, #111);
           border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-weight:900; letter-spacing:.5px; user-select:none; cursor:pointer; }
@@ -44,7 +44,7 @@
   [data-theme="light"] input,[data-theme="light"] select,[data-theme="light"] button{ background:#ffffff; color:#111; }
   button{ background: linear-gradient(135deg, #1565c0, var(--accent)); border:none; cursor:pointer; }
   button:hover{ filter:brightness(1.06); }
-  button.disabled{ background:#3a3a3a; cursor:not-allowed; }
+  button:disabled{ background:#3a3a3a; cursor:not-allowed; }
   .result{ margin-top:12px; background:rgba(15,19,32,.9); padding:16px; border-radius:12px; font-size:16px; white-space:pre-line; min-height:160px; border:1px dashed var(--border) }
   [data-theme="light"] .result{ background:#f8fafc; }
   .muted{ color:var(--muted); font-size:13px }
@@ -52,10 +52,6 @@
   [data-theme="light"] .clock{ background:#00000020; color:#111; }
   .grid2{ display:grid; grid-template-columns: 1fr 1fr; gap:12px }
   @media(max-width:760px){ .grid2{grid-template-columns:1fr} }
-  .toolbar{ display:flex; gap:10px; justify-content:center; margin-top:6px }
-  .colorbox{ display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap; }
-  .swatch{ display:flex; align-items:center; gap:8px }
-  .swatch input[type="color"]{ width:42px; height:36px; padding:0; border-radius:10px; border:1px solid var(--border); }
 </style>
 </head>
 <body>
@@ -72,7 +68,7 @@
         <input id="pwd" type="password" placeholder="••••" />
       </div>
       <div style="flex:1">
-        <button id="loginBtn" onclick="unlock()">دخول</button>
+        <button id="loginBtn">دخول</button>
       </div>
     </div>
     <div id="loginMsg" class="muted" style="margin-top:6px"></div>
@@ -81,65 +77,48 @@
   <!-- Main -->
   <div id="main" style="display:none">
     <div class="card">
-      <div class="brand"><div class="logo" id="logo2" title="انقر مرتين لتصفير العدّاد (مخفي)"><span>NT</span></div><div><h1>NAIF TRADING BOT — إشارات فوركس فقط</h1><div class="sub">أزواج فوركس + ذهب/فضة + بتكوين</div></div></div>
-
-      <!-- Theme & colors -->
-      <div class="toolbar">
-        <button id="themeBtn" onclick="toggleTheme()">🌓 الوضع: غامق/فاتح</button>
-      </div>
-      <div class="colorbox">
-        <div class="swatch"><label>Accent</label><input type="color" id="cAccent" value="#1e88e5" onchange="setAccent(this.value)" /></div>
-        <div class="swatch"><label>Gold</label><input type="color" id="cGold" value="#ffd54f" onchange="setGold(this.value)" /></div>
-      </div>
+      <div class="brand"><div class="logo" id="logo2" title="انقر مرتين لتصفير العدّاد (مخفي)"><span>NT</span></div><div><h1>NAIF TRADING BOT — MTF Pro (v3)</h1><div class="sub">تحليل شموع شامل دائم + MTF + سعر دخول مرن</div></div></div>
 
       <div class="grid2">
         <div>
           <label>الأصل</label>
           <select id="pairSelect">
             <option value="" selected disabled>اختر أصلًا</option>
-            <optgroup label="الأزواج الرئيسية">
-          <option value="EUR/USD">🇪🇺 EUR/USD 🇺🇸</option>
-          <option value="GBP/USD">🇬🇧 GBP/USD 🇺🇸</option>
-          <option value="USD/JPY">🇺🇸 USD/JPY 🇯🇵</option>
-          <option value="USD/CHF">🇺🇸 USD/CHF 🇨🇭</option>
-          <option value="USD/CAD">🇺🇸 USD/CAD 🇨🇦</option>
-          <option value="AUD/USD">🇦🇺 AUD/USD 🇺🇸</option>
-          <option value="NZD/USD">🇳🇿 NZD/USD 🇺🇸</option>
-            </optgroup>
-            <optgroup label="الأزواج الثانوية (تشمل CNH/HKD)">
-          <option value="EUR/GBP">🇪🇺 EUR/GBP 🇬🇧</option>
-          <option value="EUR/JPY">🇪🇺 EUR/JPY 🇯🇵</option>
-          <option value="GBP/JPY">🇬🇧 GBP/JPY 🇯🇵</option>
-          <option value="EUR/CHF">🇪🇺 EUR/CHF 🇨🇭</option>
-          <option value="CAD/JPY">🇨🇦 CAD/JPY 🇯🇵</option>
-          <option value="AUD/JPY">🇦🇺 AUD/JPY 🇯🇵</option>
-          <option value="NZD/JPY">🇳🇿 NZD/JPY 🇯🇵</option>
-          <option value="GBP/CHF">🇬🇧 GBP/CHF 🇨🇭</option>
-          <option value="EUR/AUD">🇪🇺 EUR/AUD 🇦🇺</option>
-          <option value="EUR/CAD">🇪🇺 EUR/CAD 🇨🇦</option>
-          <option value="AUD/CAD">🇦🇺 AUD/CAD 🇨🇦</option>
-          <option value="AUD/NZD">🇦🇺 AUD/NZD 🇳🇿</option>
-          <option value="CHF/JPY">🇨🇭 CHF/JPY 🇯🇵</option>
-          <option value="EUR/NZD">🇪🇺 EUR/NZD 🇳🇿</option>
-          <option value="GBP/CAD">🇬🇧 GBP/CAD 🇨🇦</option>
-          <option value="GBP/AUD">🇬🇧 GBP/AUD 🇦🇺</option>
-          <option value="NZD/CHF">🇳🇿 NZD/CHF 🇨🇭</option>
-          <option value="USD/SEK">🇺🇸 USD/SEK 🇸🇪</option>
-          <option value="USD/NOK">🇺🇸 USD/NOK 🇳🇴</option>
-          <option value="USD/TRY">🇺🇸 USD/TRY 🇹🇷</option>
-          <option value="USD/ZAR">🇺🇸 USD/ZAR 🇿🇦</option>
-          <option value="USD/CNH">🇺🇸 USD/CNH 🇨🇳</option>
-          <option value="EUR/CNH">🇪🇺 EUR/CNH 🇨🇳</option>
-          <option value="USD/HKD">🇺🇸 USD/HKD 🇭🇰</option>
-          <option value="HKD/JPY">🇭🇰 HKD/JPY 🇯🇵</option>
-            </optgroup>
-            <optgroup label="المعادن">
-          <option value="XAU/USD">🥇 XAU/USD 🇺🇸</option>
-          <option value="XAG/USD">🥈 XAG/USD 🇺🇸</option>
-            </optgroup>
-            <optgroup label="العملات الرقمية (بتكوين)">
-          <option value="BTC/USD">₿ BTC/USD 🇺🇸</option>
-            </optgroup>
+            <option value="EUR/USD">🇪🇺 EUR/USD 🇺🇸</option>
+<option value="GBP/USD">🇬🇧 GBP/USD 🇺🇸</option>
+<option value="USD/JPY">🇺🇸 USD/JPY 🇯🇵</option>
+<option value="USD/CHF">🇺🇸 USD/CHF 🇨🇭</option>
+<option value="USD/CAD">🇺🇸 USD/CAD 🇨🇦</option>
+<option value="AUD/USD">🇦🇺 AUD/USD 🇺🇸</option>
+<option value="NZD/USD">🇳🇿 NZD/USD 🇺🇸</option>
+<option value="EUR/GBP">🇪🇺 EUR/GBP 🇬🇧</option>
+<option value="EUR/JPY">🇪🇺 EUR/JPY 🇯🇵</option>
+<option value="GBP/JPY">🇬🇧 GBP/JPY 🇯🇵</option>
+<option value="EUR/CHF">🇪🇺 EUR/CHF 🇨🇭</option>
+<option value="CAD/JPY">🇨🇦 CAD/JPY 🇯🇵</option>
+<option value="AUD/JPY">🇦🇺 AUD/JPY 🇯🇵</option>
+<option value="NZD/JPY">🇳🇿 NZD/JPY 🇯🇵</option>
+<option value="GBP/CHF">🇬🇧 GBP/CHF 🇨🇭</option>
+<option value="EUR/AUD">🇪🇺 EUR/AUD 🇦🇺</option>
+<option value="EUR/CAD">🇪🇺 EUR/CAD 🇨🇦</option>
+<option value="AUD/CAD">🇦🇺 AUD/CAD 🇨🇦</option>
+<option value="AUD/NZD">🇦🇺 AUD/NZD 🇳🇿</option>
+<option value="CHF/JPY">🇨🇭 CHF/JPY 🇯🇵</option>
+<option value="EUR/NZD">🇪🇺 EUR/NZD 🇳🇿</option>
+<option value="GBP/CAD">🇬🇧 GBP/CAD 🇨🇦</option>
+<option value="GBP/AUD">🇬🇧 GBP/AUD 🇦🇺</option>
+<option value="NZD/CHF">🇳🇿 NZD/CHF 🇨🇭</option>
+<option value="USD/SEK">🇺🇸 USD/SEK 🇸🇪</option>
+<option value="USD/NOK">🇺🇸 USD/NOK 🇳🇴</option>
+<option value="USD/TRY">🇺🇸 USD/TRY 🇹🇷</option>
+<option value="USD/ZAR">🇺🇸 USD/ZAR 🇿🇦</option>
+<option value="USD/CNH">🇺🇸 USD/CNH 🇨🇳</option>
+<option value="EUR/CNH">🇪🇺 EUR/CNH 🇨🇳</option>
+<option value="USD/HKD">🇺🇸 USD/HKD 🇭🇰</option>
+<option value="HKD/JPY">🇭🇰 HKD/JPY 🇯🇵</option>
+<option value="XAU/USD">🥇 XAU/USD 🇺🇸</option>
+<option value="XAG/USD">🥈 XAG/USD 🇺🇸</option>
+<option value="BTC/USD">₿ BTC/USD 🇺🇸</option>
           </select>
         </div>
         <div>
@@ -162,41 +141,33 @@
           </select>
         </div>
         <div>
-          <label>تنبيه قبل الدخول</label>
-          <select id="preAlertSelect">
-            <option value="10" selected>10 ثوانٍ</option>
-            <option value="5">5 ثوانٍ</option>
-            <option value="0">بدون</option>
+          <label>تأكيد متعدد الأطر (MTF)</label>
+          <select id="mtfSelect">
+            <option value="on" selected>مُفعل</option>
+            <option value="off">غير مُفعل</option>
           </select>
         </div>
       </div>
 
       <div class="grid2">
         <div>
-          <label>ADX الفترة</label>
-          <select id="adxSelect">
-            <option value="14" selected>ADX(14)</option>
-            <option value="7">ADX(7)</option>
-            <option value="20">ADX(20)</option>
+          <label>صرامة الإستراتيجية</label>
+          <select id="modeSelect">
+            <option value="balanced" selected>متوازن</option>
+            <option value="conservative">متحفظ</option>
+            <option value="active">نشط</option>
           </select>
         </div>
         <div>
-          <label>BBANDS k</label>
-          <select id="bbkSelect">
-            <option value="2.0" selected>k = 2.0</option>
-            <option value="2.5">k = 2.5</option>
+          <label>وضع سعر الدخول</label>
+          <select id="entryPriceMode">
+            <option value="live_lock" selected>تحديث حي قبل التنفيذ ثم تثبيت</option>
+            <option value="lock">تثبيت لحظة التنفيذ فقط</option>
           </select>
         </div>
       </div>
 
       <div class="grid2">
-        <div>
-          <label>بوابة ATR%</label>
-          <select id="atrModeSelect">
-            <option value="dynamic" selected>ديناميكي (مع المتوسط)</option>
-            <option value="tf">حسب الإطار (أشد)</option>
-          </select>
-        </div>
         <div>
           <label>قاعدة الدخول</label>
           <select id="entryDelaySelect">
@@ -204,6 +175,13 @@
             <option value="5">بعد 5 ثوانٍ من 00</option>
             <option value="10" selected>بعد 10 ثوانٍ من 00</option>
             <option value="15">بعد 15 ثانية من 00</option>
+          </select>
+        </div>
+        <div>
+          <label>الوضع اللوني</label>
+          <select id="themeSelect">
+            <option value="dark" selected>غامق</option>
+            <option value="light">فاتح</option>
           </select>
         </div>
       </div>
@@ -220,244 +198,369 @@
 </div>
 
 <script>
-// ===== KSA Clock =====
-function updateClock(){
-  const now = new Date();
-  const sa = new Date(now.toLocaleString('en-US', {timeZone:'Asia/Riyadh'}));
-  const pad = n=> String(n).padStart(2,'0');
-  document.getElementById('ksaClock').textContent = pad(sa.getHours())+':'+pad(sa.getMinutes())+':'+pad(sa.getSeconds())+' +03';
-}
-setInterval(updateClock, 1000); updateClock();
+(function(){
+  // ===== Theme switch =====
+  document.getElementById('themeSelect').addEventListener('change', (e)=>{
+    document.documentElement.setAttribute('data-theme', e.target.value==='light'?'light':'dark');
+  });
 
-// ===== Theme & colors =====
-function toggleTheme(){
-  const el=document.documentElement;
-  el.setAttribute('data-theme', el.getAttribute('data-theme')==='light'?'dark':'light');
-}
-function setAccent(v){ document.documentElement.style.setProperty('--accent', v); }
-function setGold(v){ document.documentElement.style.setProperty('--gold', v); }
+  // ===== KSA Clock =====
+  function updateClock(){
+    try{
+      const now = new Date();
+      const sa = new Date(now.toLocaleString('en-US', {timeZone:'Asia/Riyadh'}));
+      const pad = n=> String(n).padStart(2,'0');
+      const el = document.getElementById('ksaClock');
+      if(el) el.textContent = pad(sa.getHours())+':'+pad(sa.getMinutes())+':'+pad(sa.getSeconds())+' +03';
+    }catch(e){}
+  }
+  setInterval(updateClock, 1000); updateClock();
 
-// ===== WebAudio beeps =====
-let audioCtx = null;
-function beep(freq=880, ms=120, type='sine'){ try{ if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); const o=audioCtx.createOscillator(); const g=audioCtx.createGain(); o.type=type; o.frequency.value=freq; o.connect(g); g.connect(audioCtx.destination); g.gain.setValueAtTime(0.0001, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.2, audioCtx.currentTime+0.01); o.start(); setTimeout(()=>{ g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime+0.05); o.stop(audioCtx.currentTime+0.06); }, ms); }catch(e){} }
-function clickSound(){ beep(660, 60, 'square'); }
-document.addEventListener('click', ()=>{ try{ if(audioCtx) audioCtx.resume(); }catch(e){} }, {once:true});
+  // ===== Sounds =====
+  let audioCtx = null;
+  function beep(freq=880, ms=120, type='sine'){ try{ if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); const o=audioCtx.createOscillator(); const g=audioCtx.createGain(); o.type=type; o.frequency.value=freq; o.connect(g); g.connect(audioCtx.destination); g.gain.setValueAtTime(0.0001, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.2, audioCtx.currentTime+0.01); o.start(); setTimeout(()=>{ g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime+0.05); o.stop(audioCtx.currentTime+0.06); }, ms); }catch(e){} }
+  function clickSound(){ beep(660, 60, 'square'); }
+  document.addEventListener('click', ()=>{ try{ if(audioCtx) audioCtx.resume(); }catch(e){} }, {once:true});
 
-// ===== Login with PBKDF2 =====
-const LOGIN_SALT_HEX = "be1abb1b0dbdf52a71b9a70c866b1a89";
-const LOGIN_ITER = 200000;
-const LOGIN_EXPECT_HEX = "5d1e3254fde74e743f5397941a0df53a53d05f8bc1e728ff43386037bd98ae2b";
+  // ===== Login + API key recovery =====
+  const LOGIN_SALT_HEX = "7f197fe4d41e87d9058550d9c2d004e4";
+  const LOGIN_ITER = 200000;
+  const LOGIN_EXPECT_HEX = "7ef68baf1ed138bd7a407cc5f00292e7681dbefff1d31f75e91ddaaa122aa6f9";
+  const API_SALT_HEX = "fb5df214101d95bdcf473d9493a9b5d4";
+  const API_ITER = 200000;
+  const API_OBF_HEX = "5df5edb506633764ed89b304ac387c5def3e00038c7dbf1fea9d30924fd91e03";
+  let API_KEY = null;
 
-// API recovery (PBKDF2 key XOR)
-const API_SALT_HEX = "8783d1ed67344ffabc098abd80acb828";
-const API_ITER = 200000;
-const API_OBF_HEX = "cd817b1771d3b88824a22a5e5f29081403fb12b60915eb6827edb141f8d01a30";
-let API_KEY = null;
+  async function pbkdf2Hex(pwd, saltHex, iter){
+    const enc = new TextEncoder();
+    const mat = await crypto.subtle.importKey('raw', enc.encode(pwd), 'PBKDF2', false, ['deriveBits']);
+    const salt = hexToBytes(saltHex);
+    const bits = await crypto.subtle.deriveBits({name:'PBKDF2', salt, iterations:iter, hash:'SHA-256'}, mat, 256);
+    return buf2hex(bits);
+  }
+  async function pbkdf2Raw(pwd, saltHex, iter){
+    const enc = new TextEncoder();
+    const mat = await crypto.subtle.importKey('raw', enc.encode(pwd), 'PBKDF2', false, ['deriveBits']);
+    const salt = hexToBytes(saltHex);
+    const bits = await crypto.subtle.deriveBits({name:'PBKDF2', salt, iterations:iter, hash:'SHA-256'}, mat, 256);
+    return new Uint8Array(bits);
+  }
+  function hexToBytes(hex){ const arr=new Uint8Array(hex.length/2); for(let i=0;i<arr.length;i++) arr[i]=parseInt(hex.substr(i*2,2),16); return arr; }
+  function buf2hex(buf){ const b=new Uint8Array(buf); let s=''; for(let i=0;i<b.length;i++) s+=b[i].toString(16).padStart(2,'0'); return s; }
 
-async function pbkdf2Hex(pwd, saltHex, iter){
-  const enc = new TextEncoder();
-  const mat = await crypto.subtle.importKey('raw', enc.encode(pwd), 'PBKDF2', false, ['deriveBits']);
-  const salt = hexToBytes(saltHex);
-  const bits = await crypto.subtle.deriveBits({name:'PBKDF2', salt, iterations:iter, hash:'SHA-256'}, mat, 256);
-  return buf2hex(bits);
-}
-async function pbkdf2Raw(pwd, saltHex, iter){
-  const enc = new TextEncoder();
-  const mat = await crypto.subtle.importKey('raw', enc.encode(pwd), 'PBKDF2', false, ['deriveBits']);
-  const salt = hexToBytes(saltHex);
-  const bits = await crypto.subtle.deriveBits({name:'PBKDF2', salt, iterations:iter, hash:'SHA-256'}, mat, 256);
-  return new Uint8Array(bits);
-}
-function hexToBytes(hex){ const arr = new Uint8Array(hex.length/2); for(let i=0;i<arr.length;i++) arr[i]=parseInt(hex.substr(i*2,2),16); return arr; }
-function buf2hex(buf){ const b = new Uint8Array(buf); let s=''; for(let i=0;i<b.length;i++) s+=b[i].toString(16).padStart(2,'0'); return s; }
+  async function unlock(){
+    clickSound();
+    const input=(document.getElementById('pwd').value||'').trim();
+    const msg=document.getElementById('loginMsg');
+    if(!input){ msg.innerHTML='<span class="bad">⚠️ أدخل الرقم السري.</span>'; return; }
+    msg.textContent='⌛ جاري التحقق...';
+    try{
+      const hex=await pbkdf2Hex(input, LOGIN_SALT_HEX, LOGIN_ITER);
+      if(hex===LOGIN_EXPECT_HEX){
+        const keyBytes=await pbkdf2Raw(input, API_SALT_HEX, API_ITER);
+        const obf=hexToBytes(API_OBF_HEX);
+        let plain=new Uint8Array(obf.length);
+        for(let i=0;i<obf.length;i++) plain[i]=obf[i]^keyBytes[i%keyBytes.length];
+        API_KEY=new TextDecoder().decode(plain);
+        document.getElementById('loginCard').style.display='none';
+        document.getElementById('main').style.display='block';
+        msg.innerHTML='<span class="ok">✅ تم فتح الصفحة.</span>';
+        updateQuotaUI();
+      } else { msg.innerHTML='<span class="bad">❌ غير صحيح.</span>'; }
+    }catch(e){ msg.innerHTML='<span class="bad">⚠️ خطأ في المتصفح.</span>'; }
+  }
+  window.unlock = unlock;
 
-async function unlock(){
-  clickSound();
-  const input=(document.getElementById('pwd').value||'').trim();
-  const msg=document.getElementById('loginMsg');
-  if(!input){ msg.innerHTML='<span class="bad">⚠️ أدخل الرقم السري.</span>'; return; }
-  msg.textContent='⌛ جاري التحقق...';
-  try{
-    const hex=await pbkdf2Hex(input, LOGIN_SALT_HEX, LOGIN_ITER);
-    if(hex===LOGIN_EXPECT_HEX){
-      const keyBytes=await pbkdf2Raw(input, API_SALT_HEX, API_ITER);
-      const obf=hexToBytes(API_OBF_HEX);
-      let plain=new Uint8Array(obf.length);
-      for(let i=0;i<obf.length;i++) plain[i]=obf[i]^keyBytes[i%keyBytes.length];
-      API_KEY=new TextDecoder().decode(plain);
+  // ===== Hidden reset =====
+  document.getElementById('logo2').addEventListener('dblclick', ()=>{ if(confirm('تأكيد تصفير العدّاد لليوم؟')) resetDaily(); });
+  document.addEventListener('keydown', e=>{ if(e.ctrlKey && e.altKey && (e.key==='r' || e.key==='R')){ if(confirm('تأكيد تصفير العدّاد لليوم؟')) resetDaily(); } });
 
-      document.getElementById('loginCard').style.display='none';
-      document.getElementById('main').style.display='block';
-      msg.innerHTML='<span class="ok">✅ تم فتح الصفحة.</span>';
-      updateQuotaUI();
-    } else { msg.innerHTML='<span class="bad">❌ غير صحيح.</span>'; }
-  }catch(e){ msg.innerHTML='<span class="bad">⚠️ خطأ في المتصفح.</span>'; }
-}
+  // ===== Quota/Cooldown =====
+  const QUOTA_MAX=30, COOLDOWN_MS=5*60*1000; const QKEY='NAIF_QUOTA';
+  const STORE={date:'',count:0,last_ts:0};
+  function todayStr(){ const sa=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Riyadh'})); return sa.toISOString().slice(0,10); }
+  function loadQuota(){ try{ const o=JSON.parse(localStorage.getItem(QKEY)||'null'); if(o) return o; }catch(e){} return {...STORE}; }
+  function saveQuota(o){ localStorage.setItem(QKEY, JSON.stringify(o)); }
+  function resetDaily(){ const o={...STORE, date:todayStr(), count:0, last_ts:0}; saveQuota(o); updateQuotaUI(); clickSound(); document.getElementById('out').textContent='✅ تم تصفير عدّاد اليوم.'; }
+  function updateQuotaUI(){ let o=loadQuota(); const t=todayStr(); if(o.date!==t) o={...STORE, date:t}; const next=Math.max(0,(o.last_ts+COOLDOWN_MS)-Date.now()); const m=Math.floor(next/60000), s=Math.floor((next%60000)/1000); const rest=next>0?` | انتظار: ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:''; const el=document.getElementById('quotaBox'); if(el) el.textContent=`اليوم: ${o.count} / 30${rest}`; } setInterval(updateQuotaUI,1000);
 
-// ===== Hidden reset: double-click logo or Ctrl+Alt+R =====
-document.getElementById('logo2').addEventListener('dblclick', ()=>{ if(confirm('تأكيد تصفير العدّاد لليوم؟')) resetDaily(); });
-document.addEventListener('keydown', e=>{ if(e.ctrlKey && e.altKey && (e.key==='r' || e.key==='R')){ if(confirm('تأكيد تصفير العدّاد لليوم؟')) resetDaily(); } });
+  // ===== Indicators =====
+  function sma(a,p){ if(a.length<p) return a.map(_=>a[0]); let out=[],sum=0; for(let i=0;i<a.length;i++){ sum+=a[i]; if(i>=p) sum-=a[i-p]; out.push(i>=p-1? sum/p : a[i]); } return out; }
+  function ema(a,p){ const k=2/(p+1); let out=[],prev=a[0]; for(let i=0;i<a.length;i++){ const v=a[i]; if(i===0) out.push(prev); else { prev=v*k+prev*(1-k); out.push(prev); } } return out; }
+  function rsi(c,p=14){ let g=[],l=[]; for(let i=1;i<c.length;i++){ const d=c[i]-c[i-1]; g.push(Math.max(0,d)); l.push(Math.max(0,-d)); } const a=1/p; let G=0,L=0; let out=Array(c.length).fill(50); for(let i=0;i<g.length;i++){ G=a*g[i]+(1-a)*G; L=a*l[i]+(1-a)*L; const rs=L===0?99:G/L; out[i+1]=100-(100/(1+rs)); } return out; }
+  function macd(c, f=12, s=26, sig=9){ const ef=ema(c,f), es=ema(c,s); const line=c.map((_,i)=>ef[i]-es[i]); const sg=ema(line,sig); const h=line.map((v,i)=>v-sg[i]); return {line:line,sig:sg,hist:h}; }
+  function atr(h,l,c,p=14){ let trs=[]; for(let i=1;i<c.length;i++){ const tr=Math.max(h[i]-l[i],Math.abs(h[i]-c[i-1]),Math.abs(l[i]-c[i-1])); trs.push(tr); } const a=1/p; let out=[...Array(c.length).fill(0)], avg=0; for(let i=0;i<trs.length;i++){ avg=a*trs[i]+(1-a)*avg; out[i+1]=avg; } return out; }
+  function adx(h,l,c,p=14){ const n=h.length; let pDM=Array(n).fill(0), mDM=Array(n).fill(0), TR=Array(n).fill(0); for(let i=1;i<n;i++){ const up=h[i]-h[i-1]; const dn=l[i-1]-l[i]; pDM[i]=(up>dn&&up>0)?up:0; mDM[i]=(dn>up&&dn>0)?dn:0; TR[i]=Math.max(h[i]-l[i],Math.abs(h[i]-c[i-1]),Math.abs(l[i]-c[i-1])); } function smooth(arr){ const out=Array(n).fill(0); let s=0; for(let i=1;i<=p&&i<n;i++) s+=arr[i]; out[p]=s; for(let i=p+1;i<n;i++) out[i]=out[i-1]-out[i-1]/p+arr[i]; return out; } const trS=smooth(TR), pS=smooth(pDM), mS=smooth(mDM); let pDI=Array(n).fill(0), mDI=Array(n).fill(0), DX=Array(n).fill(0); for(let i=p;i<n;i++){ pDI[i]=100*(pS[i]/trS[i]); mDI[i]=100*(mS[i]/trS[i]); DX[i]=100*Math.abs(pDI[i]-mDI[i])/(pDI[i]+mDI[i]||1); } const adxArr=Array(n).fill(0); let sumDX=0; for(let i=p;i<p*2&&i<n;i++) sumDX+=DX[i]; adxArr[p*2-1]=sumDX/p; for(let i=p*2;i<n;i++) adxArr[i]=(adxArr[i-1]*(p-1)+DX[i])/p; return {plusDI:pDI, minusDI:mDI, ADX:adxArr}; }
+  function bbands(c,period=20,k=2){ const mid=sma(c,period); let up=[],low=[]; for(let i=0;i<c.length;i++){ const st=Math.max(0,i-period+1); const win=c.slice(st,i+1); const m=mid[i]; const v=win.reduce((a,x)=>a+(x-m)*(x-m),0)/Math.max(1,win.length); const sd=Math.sqrt(v); up.push(m+k*sd); low.push(m-k*sd); } return {mid,up,low}; }
+  function bbwidth(bb){ let out=[]; for(let i=0;i<bb.mid.length;i++){ const mid=bb.mid[i]||1e-9; const w=(bb.up[i]-bb.low[i])/(Math.abs(mid)||1e-9)*100; out.push(w); } return out; }
 
-// ===== Quota/Cooldown =====
-const QUOTA_MAX=30, COOLDOWN_MS=5*60*1000; const KEY='NAIF_QUOTA';
-const STORE={date:'',count:0,last_ts:0};
-function todayStr(){ const sa=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Riyadh'})); return sa.toISOString().slice(0,10); }
-function loadQuota(){ try{ const o=JSON.parse(localStorage.getItem(KEY)||'null'); if(o) return o; }catch(e){} return {...STORE}; }
-function saveQuota(o){ localStorage.setItem(KEY, JSON.stringify(o)); }
-function resetDaily(){ const o={...STORE, date:todayStr(), count:0, last_ts:0}; saveQuota(o); updateQuotaUI(); clickSound(); document.getElementById('out').textContent='✅ تم تصفير عدّاد اليوم.'; }
-function updateQuotaUI(){ let o=loadQuota(); const t=todayStr(); if(o.date!==t) o={...STORE, date:t}; const next=Math.max(0,(o.last_ts+COOLDOWN_MS)-Date.now()); const m=Math.floor(next/60000), s=Math.floor((next%60000)/1000); const rest=next>0?` | انتظار: ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:''; document.getElementById('quotaBox').textContent=`اليوم: ${o.count} / 30${rest}`; } setInterval(updateQuotaUI,1000);
+  // ===== Candle patterns (always on) incl. Marubozu + Inside Bar =====
+  function analyzePatterns(o,h,l,c){
+    const n=c.length-1;
+    const patterns=[];
+    const body=i=> Math.abs(c[i]-o[i]);
+    const range=i=> h[i]-l[i];
+    const upper=i=> h[i]-Math.max(c[i],o[i]);
+    const lower=i=> Math.min(c[i],o[i])-l[i];
+    const isBull=i=> c[i]>o[i]; const isBear=i=> c[i]<o[i];
+    const near=(a,b,eps)=> Math.abs(a-b) <= eps;
 
-// ===== Indicators =====
-function sma(a,p){ if(a.length<p) return a.map(_=>a[0]); let out=[],sum=0; for(let i=0;i<a.length;i++){ sum+=a[i]; if(i>=p) sum-=a[i-p]; out.push(i>=p-1? sum/p : a[i]); } return out; }
-function ema(a,p){ const k=2/(p+1); let out=[],prev=a[0]; for(let i=0;i<a.length;i++){ const v=a[i]; if(i===0) out.push(prev); else { prev=v*k+prev*(1-k); out.push(prev); } } return out; }
-function rsi(c,p=14){ let g=[],l=[]; for(let i=1;i<c.length;i++){ const d=c[i]-c[i-1]; g.push(Math.max(0,d)); l.push(Math.max(0,-d)); } const a=1/p; let G=0,L=0; let out=Array(c.length).fill(50); for(let i=0;i<g.length;i++){ G=a*g[i]+(1-a)*G; L=a*l[i]+(1-a)*L; const rs=L===0?99:G/L; out[i+1]=100-(100/(1+rs)); } return out; }
-function macd(c, f=12, s=26, sig=9){ const ef=ema(c,f), es=ema(c,s); const line=c.map((_,i)=>ef[i]-es[i]); const sg=ema(line,sig); const h=line.map((v,i)=>v-sg[i]); return {line:line,sig:sg,hist:h}; }
-function atr(h,l,c,p=14){ let trs=[]; for(let i=1;i<c.length;i++){ const tr=Math.max(h[i]-l[i],Math.abs(h[i]-c[i-1]),Math.abs(l[i]-c[i-1])); trs.push(tr); } const a=1/p; let out=[...Array(c.length).fill(0)], avg=0; for(let i=0;i<trs.length;i++){ avg=a*trs[i]+(1-a)*avg; out[i+1]=avg; } return out; }
-function adx(h,l,c,p=14){ const n=h.length; let pDM=Array(n).fill(0), mDM=Array(n).fill(0), TR=Array(n).fill(0); for(let i=1;i<n;i++){ const up=h[i]-h[i-1]; const dn=l[i-1]-l[i]; pDM[i]=(up>dn&&up>0)?up:0; mDM[i]=(dn>up&&dn>0)?dn:0; TR[i]=Math.max(h[i]-l[i],Math.abs(h[i]-c[i-1]),Math.abs(l[i]-c[i-1])); } function smooth(arr){ const out=Array(n).fill(0); let s=0; for(let i=1;i<=p&&i<n;i++) s+=arr[i]; out[p]=s; for(let i=p+1;i<n;i++) out[i]=out[i-1]-out[i-1]/p+arr[i]; return out; } const trS=smooth(TR), pS=smooth(pDM), mS=smooth(mDM); let pDI=Array(n).fill(0), mDI=Array(n).fill(0), DX=Array(n).fill(0); for(let i=p;i<n;i++){ pDI[i]=100*(pS[i]/trS[i]); mDI[i]=100*(mS[i]/trS[i]); DX[i]=100*Math.abs(pDI[i]-mDI[i])/(pDI[i]+mDI[i]||1); } const adxArr=Array(n).fill(0); let sumDX=0; for(let i=p;i<p*2&&i<n;i++) sumDX+=DX[i]; adxArr[p*2-1]=sumDX/p; for(let i=p*2;i<n;i++) adxArr[i]=(adxArr[i-1]*(p-1)+DX[i])/p; return {plusDI:pDI, minusDI:mDI, ADX:adxArr}; }
-function bbands(c,period=20,k=2){ const mid=sma(c,period); let up=[],low=[]; for(let i=0;i<c.length;i++){ const st=Math.max(0,i-period+1); const win=c.slice(st,i+1); const m=mid[i]; const v=win.reduce((a,x)=>a+(x-m)*(x-m),0)/Math.max(1,win.length); const sd=Math.sqrt(v); up.push(m+k*sd); low.push(m-k*sd); } return {mid,up,low}; }
+    if(body(n) <= 0.1*range(n)) patterns.push('دوجي');
+    if(lower(n) >= 2*body(n) && upper(n) <= 0.3*body(n)) patterns.push('هامر');
+    if(upper(n) >= 2*body(n) && lower(n) <= 0.3*body(n) && isBull(n)) patterns.push('هامر مقلوب');
+    if(upper(n) >= 2*body(n) && lower(n) <= 0.3*body(n) && isBear(n)) patterns.push('شوتينج ستار');
 
-// ===== Data fetch =====
-async function fetchSeries(symbol, interval, outputsize=240){
-  const url = `https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(symbol)}&interval=${interval}&outputsize=${outputsize}&format=JSON&apikey=${encodeURIComponent(API_KEY)}`;
-  const r = await fetch(url, {cache:'no-store'});
-  const j = await r.json();
-  if(j.status==='error') throw new Error(j.message||'API error');
-  const values=(j.values||[]).slice().reverse(); if(values.length<80) throw new Error('بيانات غير كافية');
-  const opens=values.map(v=>+v.open), highs=values.map(v=>+v.high), lows=values.map(v=>+v.low), closes=values.map(v=>+v.close);
-  return {opens,highs,lows,closes,meta:j.meta};
-}
+    if(n>=1){
+      if(isBull(n) && isBear(n-1) && (c[n]-o[n]) > (o[n-1]-c[n-1]) && c[n]>=c[n-1] && o[n]<=o[n-1]) patterns.push('ابتلاع صاعد');
+      if(isBear(n) && isBull(n-1) && (o[n]-c[n]) > (c[n-1]-o[n-1]) && c[n]<=c[n-1] && o[n]>=o[n-1]) patterns.push('ابتلاع هابط');
+      if(h[n] <= h[n-1] && l[n] >= l[n-1]) patterns.push('إنسايد بار');
+    }
+    if(n>=1){
+      const bullHarami = isBull(n) && isBear(n-1) && (c[n]<=o[n-1] && o[n]>=c[n-1]);
+      const bearHarami = isBear(n) && isBull(n-1) && (o[n]<=c[n-1] && c[n]>=o[n-1]);
+      if(bullHarami) patterns.push('هرامي صاعد');
+      if(bearHarami) patterns.push('هرامي هابط');
+    }
+    if(n>=1){
+      if(near(h[n],h[n-1], (range(n)+range(n-1))/20 )) patterns.push('توِييزر توب');
+      if(near(l[n],l[n-1], (range(n)+range(n-1))/20 )) patterns.push('توِييزر بوتَم');
+    }
+    if(n>=2){
+      const longBear = isBear(n-2) && body(n-2) > 0.6*range(n-2);
+      const smallMid  = body(n-1) < 0.3*range(n-1);
+      const longBull = isBull(n) && body(n) > 0.6*range(n);
+      if(longBear && smallMid && longBull && c[n]> (o[n-2] + (c[n-2]-o[n-2]) / 2) ) patterns.push('مورنينج ستار');
+      const longBull0 = isBull(n-2) && body(n-2) > 0.6*range(n-2);
+      const smallMid0  = body(n-1) < 0.3*range(n-1);
+      const longBear0 = isBear(n) && body(n) > 0.6*range(n);
+      if(longBull0 && smallMid0 && longBear0 && c[n] < (o[n-2] + (c[n-2]-o[n-2]) / 2)) patterns.push('إيفننغ ستار');
+    }
+    if(n>=2){
+      if(isBull(n) && isBull(n-1) && isBull(n-2) && c[n]>c[n-1] && c[n-1]>c[n-2]) patterns.push('ثلاثة جنود بيض');
+      if(isBear(n) && isBear(n-1) && isBear(n-2) && c[n]<c[n-1] && c[n-1]<c[n-2]) patterns.push('ثلاثة غربان سود');
+    }
+    if(n>=1){
+      if(isBull(n) && isBear(n-1) && o[n] < l[n-1] && c[n] > (o[n-1] - (o[n-1]-c[n-1])/2)) patterns.push('اختراق صاعد');
+      if(isBear(n) && isBull(n-1) && o[n] > h[n-1] && c[n] < (c[n-1] + (o[n-1]-c[n-1])/2)) patterns.push('سحابة داكنة');
+    }
+    if( (h[n]-Math.max(c[n],o[n])) <= 0.1*range(n) && (Math.min(c[n],o[n])-l[n]) <= 0.1*range(n) && body(n) >= 0.8*range(n) ) patterns.push(isBull(n)?'ماروبوزو صاعد':'ماروبوزو هابط');
 
-// ===== Decision =====
-function decide(opens,highs,lows,closes, bbK=2.0, adxP=14, atrMode='dynamic', tf='1min'){
-  const i=closes.length-1;
-  const ema14=ema(closes,14), ema50=ema(closes,50), ema200=ema(closes,200);
-  const rsiArr=rsi(closes,14); const mac=macd(closes);
-  const atrArr=atr(highs,lows,closes,14);
-  const bb=bbands(closes,20,bbK); const ax=adx(highs,lows,closes,adxP);
-
-  const price=closes[i]; const rsiV=rsiArr[i]; const hist=mac.hist[i];
-  const pa=(price>ema14[i] && price>opens[i])?'CALL':(price<ema14[i] && price<opens[i])?'PUT':'NEUTRAL';
-  const trend=ema50[i]>ema200[i]?'UP':'DOWN';
-
-  // ATR%
-  const atrp=(atrArr[i]/price)*100;
-  const atrpSeries=atrArr.map((a,idx)=> (a/Math.max(1e-9,closes[idx]))*100 );
-  const atrpAvg=sma(atrpSeries,20)[i];
-  let atrOk=false;
-  if(atrMode==='tf'){
-    const tfMin={'1min':0.03,'5min':0.06}[tf]||0.03; // percent
-    atrOk = atrp >= tfMin;
-  } else {
-    atrOk = atrp >= Math.max(0.02, atrpAvg*0.85);
+    let bull=0,bear=0;
+    patterns.forEach(p=>{ if(/صاعد|جنود|هامر(?! مقلوب)|مورنينج|اختراق|إنسايد/.test(p)) bull++; if(/هابط|غربان|شوتينج|إيفننغ|سحابة|ماروبوزو هابط/.test(p)) bear++; });
+    let dir='محايد'; if(bull>bear) dir='CALL'; else if(bear>bull) dir='PUT';
+    return {list:patterns, dir};
   }
 
-  const bbVote = price <= bb.low[i] ? 'CALL' : price >= bb.up[i] ? 'PUT' : 'NEUTRAL';
-  const rsiVote = rsiV<=30?'CALL': rsiV>=70?'PUT':'NEUTRAL';
-  const macVote = hist>0?'CALL':'PUT';
-  const trendVote = trend==='UP'?'CALL':'PUT';
+  // ===== Data =====
+  async function fetchSeries(symbol, interval, outputsize=360){
+    const url = `https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(symbol)}&interval=${interval}&outputsize=${outputsize}&format=JSON&apikey=${encodeURIComponent(API_KEY)}`;
+    const r = await fetch(url, {cache:'no-store'});
+    const j = await r.json();
+    if(j.status==='error') throw new Error(j.message||'API error');
+    const values=(j.values||[]).slice().reverse(); if(values.length<80) throw new Error('بيانات غير كافية');
+    const opens=values.map(v=>+v.open), highs=values.map(v=>+v.high), lows=values.map(v=>+v.low), closes=values.map(v=>+v.close);
+    return {opens,highs,lows,closes,meta:j.meta};
+  }
+  async function fetchPrice(symbol){
+    const url = `https://api.twelvedata.com/price?symbol=${encodeURIComponent(symbol)}&format=JSON&apikey=${encodeURIComponent(API_KEY)}`;
+    const r = await fetch(url, {cache:'no-store'});
+    const j = await r.json();
+    if(j.status==='error') throw new Error(j.message||'API price error');
+    return parseFloat(j.price);
+  }
 
-  const adxV = ax.ADX[i]; const adxOk = adxV>=18;
-  const votes=[rsiVote, macVote, pa, trendVote, bbVote];
-  const callVotes=votes.filter(v=>v==='CALL').length, putVotes=votes.filter(v=>v==='PUT').length;
+  // ===== Decision =====
+  function decideAll(data, dataHTF, params){
+    const {opens,highs,lows,closes} = data;
+    const i=closes.length-1;
+    const ema14=ema(closes,14), ema50=ema(closes,50), ema200=ema(closes,200);
+    const rsiArr=rsi(closes,14); const mac=macd(closes);
+    const atrArr=atr(highs,lows,closes,14);
+    const bb=bbands(closes,20,2.0); const bbw=bbwidth(bb);
+    const ax=adx(highs,lows,closes,14);
 
-  let direction='NEUTRAL', confidence=50;
-  if(atrOk && adxOk){ if(callVotes>=3){ direction='CALL'; confidence = callVotes>=4? 92: 80; } else if(putVotes>=3){ direction='PUT'; confidence = putVotes>=4? 92: 80; } }
-  return {direction, confidence, details:{rsi:rsiV, macd_hist:hist, pa, trend, bbVote, bbLow:bb.low[i], bbUp:bb.up[i], atrp, atrpAvg, atrOk, adx:adxV, adxOk, votes, bbK, adxP, atrMode} };
-}
+    const price=closes[i]; const rsiV=rsiArr[i]; const hist=mac.hist[i];
+    const pa=(price>ema14[i] && price>opens[i])?'CALL':(price<ema14[i] && price<opens[i])?'PUT':'NEUTRAL';
+    const trend=ema50[i]>ema200[i]?'UP':'DOWN';
+    const bbVote = price <= bb.low[i] ? 'CALL' : price >= bb.up[i] ? 'PUT' : 'NEUTRAL';
+    const rsiVote = rsiV<30?'CALL': rsiV>70?'PUT':'NEUTRAL';
+    const macVote = hist>0?'CALL':'PUT';
 
-// ===== Pre-entry beeps =====
-let countdownTimer=null;
-function schedulePreAlert(entryTs, preSec){
-  clearInterval(countdownTimer);
-  if(preSec<=0) return;
-  countdownTimer=setInterval(()=>{
-    const now=Date.now(); const diff=Math.floor((entryTs-now)/1000);
-    if(diff<=0){ clearInterval(countdownTimer); beep(880,160,'sawtooth'); return; }
-    if(diff<=preSec) beep(880-(preSec-diff)*20, 90, 'square');
-  },1000);
-}
+    let votes=[rsiVote, macVote, pa, (trend==='UP'?'CALL':'PUT'), bbVote];
 
-// ===== Analyze =====
-async function analyze(){
-  clickSound();
-  if(!API_KEY){ alert('لست مسجل دخول'); return; }
-  let o=loadQuota(); const t=todayStr(); if(o.date!==t) o={ date:t, count:0, last_ts:0 };
-  if(o.count>=30){ document.getElementById('out').textContent='❌ وصلت للحد اليومي (30 صفقة)'; return; }
-  const remain=(o.last_ts+5*60*1000)-Date.now(); if(remain>0){ const mm=Math.floor(remain/60000), ss=Math.floor((remain%60000)/1000); document.getElementById('out').textContent='⏳ يجب الانتظار '+String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0')+' قبل الإشارة التالية.'; return; }
+    const patInfo = analyzePatterns(opens,highs,lows,closes);
+    if(patInfo.dir==='CALL') votes.push('CALL'); else if(patInfo.dir==='PUT') votes.push('PUT');
 
-  const pairEl=document.getElementById('pairSelect');
-  const pair=pairEl.value;
-  const pairLabel=pairEl.options[pairEl.selectedIndex].text;
-  const tf=document.getElementById('tfSelect').value;
-  const exp=parseInt(document.getElementById('expSelect').value||'5',10);
-  const preSec=parseInt(document.getElementById('preAlertSelect').value||'10',10);
-  const adxP=parseInt(document.getElementById('adxSelect').value||'14',10);
-  const bbK=parseFloat(document.getElementById('bbkSelect').value||'2.0');
-  const atrMode=document.getElementById('atrModeSelect').value;
-  const entryDelay=parseInt(document.getElementById('entryDelaySelect').value||'10',10);
+    const plus=ax.plusDI[i], minus=ax.minusDI[i], adxV=ax.ADX[i];
+    const diDir = plus>minus?'CALL':'PUT';
+    const diAgree = (diDir==='CALL' && (pa==='CALL' || trend==='UP')) || (diDir==='PUT' && (pa==='PUT' || trend==='DOWN'));
 
-  const out=document.getElementById('out');
-  if(!pair){ alert('اختر أصلًا'); return; }
-  out.textContent='⏳ جاري التحليل...';
+    const atrp=(atrArr[i]/price)*100;
+    const atrpSeries=atrArr.map((a,idx)=> (a/Math.max(1e-9,closes[idx]))*100 );
+    const atrpAvg=sma(atrpSeries,20)[i];
+    const bbwV=bbw[i];
+    const highVol = atrp >= (params.tf==='1min'? 0.02: 0.035);
 
-  let symbol=pair;
-  if(pair==='GOLD/USD') symbol='XAU/USD'; // legacy case if used
-
-  try{
-    const s=await fetchSeries(symbol, tf, 360);
-    const d=decide(s.opens,s.highs,s.lows,s.closes, bbK, adxP, atrMode, tf);
-    const saNow=new Date(new Date().toLocaleString('en-US', {timeZone:'Asia/Riyadh'}));
-    const entry=new Date(saNow.getTime());
-    entry.setMinutes(entry.getMinutes()+1); entry.setSeconds(0); entry.setMilliseconds(0);
-    entry.setSeconds(entry.getSeconds()+entryDelay); // delay after 00
-    const mg1=new Date(entry.getTime()+exp*60000), mg2=new Date(entry.getTime()+exp*120000);
-    const fmt=dt=> dt.toLocaleTimeString('ar-EG', {hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,timeZone:'Asia/Riyadh'});
-    const today=saNow.toLocaleDateString('ar-EG', {year:'numeric',month:'2-digit',day:'2-digit',timeZone:'Asia/Riyadh'});
-
-    if(d.direction==='NEUTRAL'){
-      out.textContent = `ℹ️ لا توجد إشارة مؤكدة الآن (لم تتحقق الشروط).
-الأصل: ${pairLabel}
-الإطار: ${tf}
-الإعدادات: ADX(${d.details.adxP}) • BB k=${d.details.bbK} • ATR=${d.details.atrMode}
-ATR%: ${d.details.atrp.toFixed(3)} (متوسط: ${d.details.atrpAvg.toFixed(3)}) — ATR OK: ${d.details.atrOk?'✅':'❌'}
-ADX: ${d.details.adx.toFixed(2)} — ADX OK: ${d.details.adxOk?'✅':'❌'}
-التاريخ: ${today} 🇸🇦`;
-      return;
+    let htf={ok:false, dir:'NEUTRAL', adx:0};
+    if(dataHTF){
+      const c2=dataHTF.closes, h2=dataHTF.highs, l2=dataHTF.lows;
+      const e50=ema(c2,50), e200=ema(c2,200);
+      const ax2=adx(h2,l2,c2,14);
+      const d2=e50[e50.length-1]>e200[e200.length-1]?'CALL':'PUT';
+      const adx2=ax2.ADX[ax2.ADX.length-1];
+      htf.dir=d2; htf.adx=adx2; htf.ok = adx2 >= (params.adx_th-2);
     }
 
-    const dirIcon = d.direction==='CALL' ? '🟩 شراء' : '🟥 بيع';
-    out.textContent = `${pairLabel}
-🕘 انتهاء الصلاحية ${exp} دقائق
-⏺️ دخول عند ${fmt(entry)}
-${dirIcon}
+    const votesNeed= params.density==='high'? 2.5 : params.density==='low'? 3.5 : 3.0;
+    let gatePass=false;
+    if(params.gate==='AND') gatePass = (highVol && adxV>=params.adx_th);
+    else if(params.gate==='OR') gatePass = (highVol || adxV>=params.adx_th);
+    else gatePass = (highVol || adxV>=params.adx_th) || (highVol && adxV>=params.adx_th-1);
 
-📊 المؤشرات (3 من 5) + ATR% + ADX:
-• RSI(14): ${d.details.rsi.toFixed(2)} → ${d.details.rsi<=30?'CALL': d.details.rsi>=70?'PUT':'محايد'}
-• MACD hist: ${d.details.macd_hist.toFixed(5)} → ${d.details.macd_hist>0?'CALL':'PUT'}
-• Price Action/EMA14: ${d.details.pa}
-• Trend EMA(50/200): ${d.details.trend==='UP'?'CALL':'PUT'}
-• BBANDS(20, ${d.details.bbK}): ${d.details.bbVote}
-• ATR%: ${d.details.atrp.toFixed(3)} (متوسط 20: ${d.details.atrpAvg.toFixed(3)}) → ${d.details.atrOk?'✅ OK':'❌ منخفض'}
-• ADX(${d.details.adxP}): ${d.details.adx.toFixed(2)} → ${d.details.adxOk?'✅ قوي':'❌ ضعيف'}
+    let callVotes=votes.filter(v=>v==='CALL').length;
+    let putVotes=votes.filter(v=>v==='PUT').length;
+    let dir = callVotes>putVotes?'CALL': putVotes>callVotes?'PUT':'NEUTRAL';
 
-✅ قوة الإشارة: ${d.confidence}%
+    if(adxV>=params.adx_th && diAgree && dir!=='NEUTRAL'){ if(dir==='CALL') callVotes+=0.5; else putVotes+=0.5; }
+    let maxVotes=Math.max(callVotes,putVotes);
 
-🛡️ مستويات الحماية:
-1️⃣ ${fmt(mg1)}
-2️⃣ ${fmt(mg2)}
+    let mtfOk=true;
+    if(params.mtf==='on'){
+      mtfOk = htf.ok && (htf.dir===dir);
+      if(!mtfOk && params.density==='high'){ if((dir==='CALL' && (mac.hist[i]>0 && price>ema14[i])) || (dir==='PUT' && (mac.hist[i]<0 && price<ema14[i]))) mtfOk=true; }
+    }
 
-📅 التاريخ: ${today} 🇸🇦`;
+    if(!gatePass || maxVotes<votesNeed || !mtfOk){
+      return {direction:'NEUTRAL', confidence:55, explain:{callVotes, putVotes, adxV, atrp, bbwV, mtf:htf, patInfo} };
+    }
 
-    // success -> quota & cooldown, schedule pre-alert beeps
-    o.count+=1; o.last_ts=Date.now(); saveQuota(o); updateQuotaUI();
-    schedulePreAlert(entry.getTime(), preSec);
+    let conf = 62 + (maxVotes-2)*6;
+    conf += Math.max(0, Math.min(10, (adxV - (params.adx_th-2)) * 0.7));
+    const atrRatio = atrpAvg>0? (atrp/atrpAvg) : 1;
+    conf += Math.max(-6, Math.min(8, (atrRatio-1)*6));
+    if(patInfo.dir!=='محايد') conf += 2;
+    conf = Math.max(60, Math.min(92, conf));
 
-  }catch(e){ out.textContent='❌ خطأ في جلب البيانات: '+e.message; }
-}
+    return {direction:dir, confidence:Math.round(conf), explain:{callVotes, putVotes, adxV, atrp, bbwV, mtf:htf, patInfo} };
+  }
 
-// ===== Utils =====
-function hexToBytes(hex){ const arr=new Uint8Array(hex.length/2); for(let i=0;i<arr.length;i++) arr[i]=parseInt(hex.substr(i*2,2),16); return arr; }
-function buf2hex(buf){ const b=new Uint8Array(buf); let s=''; for(let i=0;i<b.length;i++) s+=b[i].toString(16).padStart(2,'0'); return s; }
+  // ===== Pre-beep + Entry Price Flow =====
+  let preBeepTimer=null, livePriceTimer=null, lockTimer=null;
+  function startPreBeep(entryTs){
+    clearInterval(preBeepTimer);
+    preBeepTimer=setInterval(()=>{
+      const diff = Math.floor((entryTs-Date.now())/1000);
+      if(diff<=0){ clearInterval(preBeepTimer); beep(880,180,'sawtooth'); return; }
+      if(diff<=10) beep(880-(10-diff)*20, 90, 'square');
+    },1000);
+  }
+  function startLivePrice(symbol, el, entryTs){
+    clearInterval(livePriceTimer);
+    const tick = async()=>{
+      try{ const p=await fetchPrice(symbol); if(el) el.textContent=p.toFixed(6); }catch(e){}
+      if(Date.now() >= entryTs+1500) clearInterval(livePriceTimer);
+    };
+    tick(); livePriceTimer=setInterval(tick, 1000);
+  }
+  function lockAtEntry(symbol, el, entryTs){
+    clearTimeout(lockTimer);
+    const loop=()=>{
+      const now=Date.now();
+      if(now >= entryTs){
+        fetchPrice(symbol).then(p=>{ if(el) el.textContent=p.toFixed(6); }).catch(()=>{ if(el) el.textContent='—'; });
+      } else {
+        const delta = entryTs-now;
+        const wait = delta>2000 ? 1000 : delta>500 ? 200 : 50;
+        lockTimer = setTimeout(loop, wait);
+      }
+    };
+    loop();
+  }
+
+  // ===== Analyze =====
+  async function analyze(){
+    clickSound();
+    if(!API_KEY){ alert('لست مسجل دخول'); return; }
+
+    let o=loadQuota(); const t=todayStr(); if(o.date!==t) o={ date:t, count:0, last_ts:0 };
+    if(o.count>=30){ document.getElementById('out').textContent='❌ وصلت للحد اليومي (30 صفقة)'; return; }
+    const remain=(o.last_ts+5*60*1000)-Date.now(); if(remain>0){ const mm=Math.floor(remain/60000), ss=Math.floor((remain%60000)/1000); document.getElementById('out').textContent='⏳ انتظر '+String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0'); return; }
+
+    const btn = document.getElementById('analyzeBtn'); btn.disabled=true; setTimeout(()=>btn.disabled=false, 1600);
+
+    const pair = document.getElementById('pairSelect').value;
+    if(!pair){ alert('اختر أصلًا'); return; }
+    const tf=document.getElementById('tfSelect').value;
+    const exp=parseInt(document.getElementById('expSelect').value||'5',10);
+    const mtf=document.getElementById('mtfSelect').value;
+    const mode=document.getElementById('modeSelect').value;
+    const entryDelay=parseInt(document.getElementById('entryDelaySelect').value||'10',10);
+    const priceMode=document.getElementById('entryPriceMode').value;
+
+    document.documentElement.setAttribute('data-theme', document.getElementById('themeSelect').value==='light'?'light':'dark');
+
+    const out=document.getElementById('out'); out.textContent='⏳ جاري التحليل...';
+
+    const cfg = mode==='conservative' ? { adx_th:18, gate:'AND' } : (mode==='active' ? { adx_th:14, gate:'OR' } : { adx_th:16, gate:'OR+' });
+    const params={ tf, density:'med', mtf, adx_th:cfg.adx_th, gate:cfg.gate };
+
+    try{
+      const data=await fetchSeries(pair, tf, 360);
+      let dataHTF=null; if(mtf==='on'){ const htf=tf==='1min'? '5min':'15min'; dataHTF=await fetchSeries(pair, htf, 360); }
+      const d=decideAll(data, dataHTF, params);
+
+      const saNow=new Date(new Date().toLocaleString('en-US', {timeZone:'Asia/Riyadh'}));
+      const entry=new Date(saNow.getTime()); entry.setMinutes(entry.getMinutes()+1); entry.setSeconds(0); entry.setMilliseconds(0); entry.setSeconds(entry.getSeconds()+entryDelay);
+      const mg1=new Date(entry.getTime()+exp*60000), mg2=new Date(entry.getTime()+exp*120000);
+      const fmt=dt=> dt.toLocaleTimeString('ar-EG', {hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,timeZone:'Asia/Riyadh'});
+      const today=saNow.toLocaleDateString('ar-EG', {year:'numeric',month:'2-digit',day:'numeric',timeZone:'Asia/Riyadh'});
+
+      const priceSpanId = 'px_'+Date.now();
+      const headerPrice = '<div>💵 سعر الدخول ('+(priceMode==='live_lock'?'تحديث حي ثم تثبيت':'تثبيت عند التنفيذ')+'): <b id="'+priceSpanId+'">—</b></div>';
+
+      if(d.direction==='NEUTRAL'){
+        out.innerHTML = 'ℹ️ لا توجد إشارة مؤكدة الآن.\n'
+        + 'الأصل: '+pair+' • الإطار: '+tf+' • الوضع: '+mode.toUpperCase()+'\n'
+        + 'التوضيح: ADX='+d.explain.adxV.toFixed(2)+' | ATR%='+d.explain.atrp.toFixed(3)+' | BB%='+d.explain.bbwV.toFixed(3)+' | CALL='+d.explain.callVotes+' / PUT='+d.explain.putVotes+'\n'
+        + 'أنماط الشموع: '+((d.explain.patInfo.list||[]).join(', ')||'—')+'\n'
+        + headerPrice + '\n'
+        + '📅 '+today+' 🇸🇦';
+      } else {
+        const dirIcon = d.direction==='CALL'?'🟩 شراء':'🟥 بيع';
+        out.innerHTML = pair+'\n'
+        + '🕘 انتهاء الصلاحية '+exp+' دقائق\n'
+        + '⏺️ دخول عند '+fmt(entry)+'\n'
+        + dirIcon+'\n\n'
+        + '📊 فلترة + شموع (شامل):\n'
+        + '• أصوات المؤشرات: CALL='+d.explain.callVotes+' / PUT='+d.explain.putVotes+'\n'
+        + '• ADX(14): '+d.explain.adxV.toFixed(2)+' | ATR%: '+d.explain.atrp.toFixed(3)+' | BB width%: '+d.explain.bbwV.toFixed(3)+'\n'
+        + '• MTF: '+(mtf==='on'?'ON':'OFF')+' '+(d.explain.mtf && d.explain.mtf.dir ? ('['+d.explain.mtf.dir+' ADX '+d.explain.mtf.adx.toFixed(1)+']') : '—')+'\n'
+        + '• أنماط الشموع: '+((d.explain.patInfo.list||[]).join(', ')||'—')+'\n\n'
+        + '🎛️ الوضع: '+mode.toUpperCase()+'\n'
+        + '✅ قوة الإشارة (تقديرية): '+d.confidence+'%\n\n'
+        + '🛡️ مستويات الحماية:\n'
+        + '1️⃣ '+fmt(mg1)+'\n'
+        + '2️⃣ '+fmt(mg2)+'\n\n'
+        + headerPrice+'\n\n'
+        + '📅 '+today+' 🇸🇦';
+
+        o.count+=1; o.last_ts=Date.now(); saveQuota(o); updateQuotaUI();
+      }
+
+      const priceEl = document.getElementById(priceSpanId);
+      startPreBeep(entry.getTime());
+      if(priceMode==='live_lock') startLivePrice(pair, priceEl, entry.getTime());
+      lockAtEntry(pair, priceEl, entry.getTime());
+
+    }catch(e){
+      out.textContent='❌ خطأ في جلب البيانات: '+e.message;
+    }
+  }
+  window.analyze = analyze;
+
+  // Wire login button
+  document.getElementById('loginBtn').addEventListener('click', unlock);
+})();
 
 // ===== Prevent easy inspection (best-effort) =====
 document.addEventListener('contextmenu', e=>e.preventDefault());
