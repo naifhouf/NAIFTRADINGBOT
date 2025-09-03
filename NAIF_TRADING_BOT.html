@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAIF TRADING BOT</title>
+  <!-- Keep original stylesheet to preserve the same look -->
+  <link rel="stylesheet" href="styles.css">
+  <!-- Optional FA kit (kept to avoid changing look if used elsewhere) -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+  <style>
+    /* --- Additions only (do not alter original look) --- */
+
+    /* Big soft watermark on the video background */
+    .watermark {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      z-index: 0; /* above video, below content */
+      font-weight: 800;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      opacity: 0.08;
+      font-size: clamp(28px, 7vw, 96px);
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,.35);
+    }
+
+    /* Clock on the right */
+    .clock {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 100;
+      background: rgba(0,0,0,.35);
+      border: 1px solid rgba(255,255,255,.2);
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(0,0,0,.15);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    /* Make sure main container is hidden until password is correct */
+    .container { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Password screen (unchanged structurally) -->
+  <div id="passwordScreen" class="password-kingdom">
+    <div class="password-castle">
+      <div class="password-throne">
+        <div class="crown-icon">👑</div>
+        <h2 class="password-title">NAIF TRADING BOT</h2>
+        <p class="password-subtitle">أدخل كلمة المرور السرية</p>
+
+        <div class="password-gate">
+          <input type="password" id="passwordInput" placeholder="🗝️ Your secret key..." class="password-input">
+          <div class="input-decoration"></div>
+        </div>
+
+        <button id="passwordBtn" class="royal-button">
+          <span>Unlock</span>
+          <div class="button-sparkles">
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+          </div>
+        </button>
+
+        <p id="passwordError" class="royal-error"></p>
+
+        <div class="password-guard">
+          <span class="guard-icon">🛡️</span> الحماية مفعلة — لن تفتح الصفحة إلا برقم سري صحيح
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating shapes (kept for the same vibe) -->
+  <div class="floating-shapes">
+    <div class="shape diamond"></div>
+    <div class="shape crown"></div>
+    <div class="shape key"></div>
+  </div>
+
+  <!-- Background Video -->
+  <video id="bgVideo" autoplay loop muted>
+    <source src="https://raw.githubusercontent.com/salah126/video-bg/main/2.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- Soft watermark text over the background -->
+  <div class="watermark">NAIF TRADING BOT</div>
+
+  <!-- Clock (right side) -->
+  <div id="clock" class="clock"></div>
+
+  <header>
+    <h1 class="gold-title">بوت القيصر الذهبي</h1>
+  </header>
+
+  <!-- Main content (identical layout) -->
+  <div class="container">
+    <img src="1.jpg" alt="NAIF Trading Avatar" class="logo">
+
+    <div class="custom-dropdown">
+      <button class="dropdown-btn" id="platformBtn">
+        <img src="qu.png" alt="Quotex" id="platformIcon">
+        <span id="platformText">QUOTEX</span>
+        <span class="arrow">▾</span>
+      </button>
+      <div class="dropdown-content" id="platformList">
+        <div class="dropdown-item" data-value="quotex" data-img="qu.png">
+          <img src="qu.png" alt="Quotex"><span>QUOTEX</span>
+        </div>
+        <div class="dropdown-item" data-value="binomo" data-img="bi.png">
+          <img src="bi.png" alt="Binomo"><span>BINOMO</span>
+        </div>
+        <div class="dropdown-item" data-value="expert" data-img="eo.png">
+          <img src="eo.png" alt="Expert Option"><span>EXPERT OPTION</span>
+        </div>
+        <div class="dropdown-item" data-value="pocket" data-img="po.png">
+          <img src="po.png" alt="Pocket Option"><span>POCKET OPTION</span>
+        </div>
+        <div class="dropdown-item" data-value="olymp" data-img="ot.png">
+          <img src="ot.png" alt="Olymp Trade"><span>OLYMP TRADE</span>
+        </div>
+        <div class="dropdown-item" data-value="iq" data-img="iq.png">
+          <img src="iq.png" alt="IQ Option"><span>IQ OPTION</span>
+        </div>
+      </div>
+    </div>
+
+    <select id="currencySelect" class="select-box">
+      <option>USD/MXN (OTC)</option>
+      <option>AUD/NZD (OTC)</option>
+      <option>USD/NGN (OTC)</option>
+      <option>USD/PHP (OTC)</option>
+      <option>EUR/SGD (OTC)</option>
+      <option>USD/BRL (OTC)</option>
+      <option>NZD/CHF (OTC)</option>
+      <option>USD/TRY (OTC)</option>
+      <option>USD/PKR (OTC)</option>
+      <option>USD/COP (OTC)</option>
+      <option>UKBrent (OTC)</option>
+      <option>USCrude (OTC)</option>
+      <option>NZD/CAD (OTC)</option>
+      <option>USD/DZD (OTC)</option>
+      <option>USD/EGP (OTC)</option>
+      <option>USD/INR (OTC)</option>
+      <option>GBP/NZD (OTC)</option>
+      <option>USD/BDT (OTC)</option>
+      <option>NZD/USD (OTC)</option>
+      <option>Pfizer Inc (OTC)</option>
+      <option>Intel (OTC)</option>
+      <option>Boeing Company (OTC)</option>
+      <option>FACEBOOK INC (OTC)</option>
+      <option>Johnson &amp; Johnson (OTC)</option>
+      <option>McDonald's (OTC)</option>
+      <option>Microsoft (OTC)</option>
+      <option>American Express (OTC)</option>
+    </select>
+
+    <select id="timeSelect" class="select-box">
+      <option value="5">05 sec</option>
+      <option value="10">10 sec</option>
+      <option value="15">15 sec</option>
+      <option value="30">30 sec</option>
+      <option value="60">1 min</option>
+      <option value="300">5 min</option>
+    </select>
+
+    <button id="getSignal" class="signal-btn">Get Signal</button>
+    <p id="timer"></p>
+    <p id="signalOutput"></p>
+  </div>
+
+  <!-- Keep original gold title glow -->
+  <style>
+    .gold-title {
+      color: gold;
+      text-shadow: 0 0 5px #FFD700, 0 0 10px #FFC107;
+    }
+  </style>
+
+  <!-- Minimal inline JS: password (1408), dropdown, and clock -->
+  <script>
+    (function () {
+      const PASSWORD = "1408"; // requested password
+
+      const passwordScreen = document.getElementById("passwordScreen");
+      const passwordBtn = document.getElementById("passwordBtn");
+      const passwordInput = document.getElementById("passwordInput");
+      const passwordError = document.getElementById("passwordError");
+      const container = document.querySelector(".container");
+
+      function showPassword() {
+        passwordScreen.style.display = "flex";
+        requestAnimationFrame(() => {
+          passwordScreen.style.opacity = 1;
+          passwordScreen.style.transform = "scale(1)";
+        });
+      }
+
+      function hidePassword() {
+        passwordScreen.style.display = "none";
+        container.style.display = "block";
+      }
+
+      function checkPassword() {
+        const val = (passwordInput.value || "").trim();
+        if (val === PASSWORD) {
+          hidePassword();
+        } else {
+          passwordError.textContent = "❌ كلمة المرور غير صحيحة";
+          const castle = passwordScreen.querySelector(".password-castle");
+          castle.style.animation = "shakeError .4s ease";
+          setTimeout(() => (castle.style.animation = ""), 400);
+        }
+      }
+
+      passwordBtn.addEventListener("click", checkPassword);
+      passwordInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") checkPassword();
+      });
+
+      // Init
+      showPassword();
+
+      // Dropdown logic (non-intrusive, only if not already handled)
+      (function initDropdown(){
+        const btn = document.getElementById("platformBtn");
+        const list = document.getElementById("platformList");
+        const icon = document.getElementById("platformIcon");
+        const text = document.getElementById("platformText");
+        if(!btn || !list || !icon || !text) return;
+
+        btn.addEventListener("click", () => list.classList.toggle("show"));
+        list.querySelectorAll(".dropdown-item").forEach(item => {
+          item.addEventListener("click", () => {
+            const img = item.getAttribute("data-img");
+            const label = item.textContent.trim();
+            icon.src = img;
+            text.textContent = label.toUpperCase();
+            list.classList.remove("show");
+          });
+        });
+        document.addEventListener("click", (e) => {
+          if (!btn.contains(e.target) && !list.contains(e.target)) {
+            list.classList.remove("show");
+          }
+        });
+      })();
+
+      // Right-side clock (KSA +03:00)
+      function updateClock(){
+        const now = new Date();
+        const utc = now.getTime() + now.getTimezoneOffset()*60000;
+        const ksa = new Date(utc + 3*3600000); // +03:00
+        const time = ksa.toLocaleTimeString('ar-SA', { hour12: false });
+        const date = ksa.toLocaleDateString('ar-SA');
+        document.getElementById("clock").textContent = time + " | " + date + "  (+03)";
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+    })();
+  </script>
+
+  <!-- If you still want to keep your original script for signals, include it here -->
+  <!-- <script src="script.js"></script> -->
+</body>
+</html>
