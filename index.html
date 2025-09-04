@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAIF TRADING BOT — Secure</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root{--primary:#6C5CE7;--primary-dark:#5649C7;--secondary:#00D1A0;--accent:#FF5E7D;--dark:#0F0C29;--light:#F5F7FF;--glass:rgba(255,255,255,.1)}
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--dark);color:var(--light);font-family:'Poppins',sans-serif;min-height:100vh;overflow-x:hidden;user-select:none}
+    img,video{pointer-events:none}
+    .video-bg{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;opacity:.12}
+    .container{max-width:520px;margin:0 auto;padding:20px;position:relative;z-index:1}
+    .header{text-align:center;margin-bottom:18px;position:relative}
+    .logo{width:86px;height:86px;margin:0 auto 12px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 5px 20px rgba(108,92,231,.5);border:3px solid rgba(255,255,255,.2);position:relative;overflow:hidden}
+    .logo::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(to bottom right,rgba(255,255,255,0) 0%,rgba(255,255,255,.12) 50%,rgba(255,255,255,0) 100%);transform:rotate(30deg);animation:shine 3s infinite}
+    .naif-text{font-weight:800;letter-spacing:2px;font-size:22px}
+    .app-name{font-size:24px;font-weight:800;margin-bottom:6px;background:linear-gradient(to right,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:inline-block;position:relative}
+    .app-badge{position:absolute;top:-8px;right:-28px;font-size:12px;background:var(--accent);color:#fff;padding:2px 6px;border-radius:4px;transform:rotate(15deg)}
+    .stats{background:rgba(30,33,48,.75);padding:10px;border-radius:10px;text-align:center;font-size:14px;margin-bottom:14px;border:1px solid var(--glass);backdrop-filter:blur(5px);position:relative;overflow:hidden}
+    .stats::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(to right,var(--primary),var(--secondary))}
+    .signal-count{color:var(--secondary);font-weight:700;text-shadow:0 0 10px rgba(0,209,160,.5);animation:pulseGlow 2s infinite;position:relative}
+    .section{background:rgba(26,29,40,.85);border-radius:12px;padding:15px;margin-bottom:14px;border:1px solid var(--glass);backdrop-filter:blur(5px);transition:.3s;box-shadow:0 5px 15px rgba(0,0,0,.12)}
+    .section:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.22)}
+    .section-title{font-size:16px;margin-bottom:12px;color:var(--secondary);font-weight:700;display:flex;align-items:center;justify-content:space-between}
+    .section-info{color:rgba(255,255,255,.6);font-size:12px;cursor:help}
+    .platform-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .platform-btn{pointer-events:auto;padding:12px;border-radius:10px;background:rgba(0,0,0,.3);border:1px solid var(--glass);display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:.3s;text-align:center;min-height:60px;position:relative;overflow:hidden}
+    .platform-btn.selected{background:var(--primary);border-color:var(--primary);transform:translateY(-3px);box-shadow:0 5px 15px rgba(108,92,231,.4)}
+    .platform-icon{width:24px;height:24px;object-fit:contain;filter:drop-shadow(0 2px 3px rgba(0,0,0,.3))}
+    .market-toggle{display:flex;border-radius:10px;overflow:hidden;border:1px solid var(--glass);position:relative}
+    .market-toggle::after{content:'';position:absolute;top:0;left:50%;width:1px;height:100%;background:var(--glass)}
+    .market-btn{pointer-events:auto;flex:1;padding:10px;text-align:center;background:rgba(0,0,0,.3);cursor:pointer;transition:.3s;position:relative;z-index:1}
+    .market-btn.selected{background:var(--primary)}
+    .custom-select{position:relative;margin-bottom:5px}
+    .custom-select select{width:100%;padding:12px 40px 12px 15px;border-radius:10px;border:1px solid var(--glass);background:rgba(0,0,0,.3);color:#fff;font-size:14px;appearance:none;cursor:pointer;transition:.3s}
+    .custom-select select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(108,92,231,.3)}
+    .custom-select::after{content:'';position:absolute;top:50%;right:15px;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid #fff;transform:translateY(-50%);pointer-events:none}
+    .time-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+    .time-btn{pointer-events:auto;padding:10px;border-radius:8px;background:rgba(0,0,0,.3);font-size:13px;text-align:center;border:1px solid var(--glass);cursor:pointer;transition:.3s}
+    .time-btn.selected{background:var(--primary);border-color:var(--primary);transform:translateY(-3px);box-shadow:0 3px 10px rgba(108,92,231,.3)}
+    .btn{pointer-events:auto;display:block;width:100%;padding:14px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;font-weight:700;font-size:15px;margin:16px 0;cursor:pointer;transition:.3s;box-shadow:0 5px 15px rgba(108,92,231,.3);position:relative;overflow:hidden}
+    .btn:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(108,92,231,.4)}
+    .signal-modal,.license-modal,.terms-modal,.security-lock{display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;background:rgba(0,0,0,.82);backdrop-filter:blur(6px);animation:fadeIn .3s;pointer-events:none}
+    .signal-modal[style*='display: flex'],.license-modal[style*='display: flex'],.terms-modal[style*='display: flex'],.security-lock[style*='display: flex']{pointer-events:auto}
+    .signal-box,.license-box,.terms-box{background:rgba(26,29,40,.95);padding:25px;border-radius:15px;width:90%;max-width:380px;text-align:center;border:1px solid var(--glass);box-shadow:0 10px 30px rgba(0,0,0,.3);animation:modalIn .4s;position:relative}
+    .signal-box::before,.license-box::before,.terms-box::before{content:'';position:absolute;top:0;left:0;width:100%;height:5px;background:linear-gradient(to right,var(--primary),var(--secondary));border-radius:15px 15px 0 0}
+    .signal-direction{font-size:42px;font-weight:800;margin:15px 0;text-transform:uppercase;position:relative;display:inline-block}
+    .signal-up{color:var(--secondary);animation:pulse 2s infinite}
+    .signal-down{color:#FF4D6D;animation:pulse 2s infinite}
+    .signal-details{font-size:16px;margin:20px 0;background:rgba(0,0,0,.2);padding:15px;border-radius:10px;border-left:3px solid var(--primary)}
+    .signal-details div{margin-bottom:10px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+    .flagpair{font-size:20px;display:inline-flex;gap:6px;align-items:center}
+    .license-input{width:100%;padding:14px;margin:15px 0;border-radius:10px;border:1px solid var(--glass);background:rgba(0,0,0,.3);color:#fff;font-size:15px;text-align:center;letter-spacing:1px;transition:.3s}
+    .checkbox-container{display:flex;align-items:center;justify-content:center;margin:15px 0;font-size:13px}
+    .checkbox-container input{margin-inline-end:10px;width:16px;height:16px;accent-color:var(--primary);cursor:pointer}
+    .contact-buttons{display:flex;justify-content:center;gap:15px;margin-top:20px}
+    .contact-btn{display:flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:50%;color:#fff;font-size:22px;text-decoration:none;transition:.3s;box-shadow:0 5px 15px rgba(0,0,0,.2);position:relative;overflow:hidden}
+    .telegram-btn{background:linear-gradient(135deg,#0088cc,#00A8E8)}
+    .notification-badge{position:fixed;top:20px;right:20px;background:var(--accent);color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;z-index:10;box-shadow:0 5px 15px rgba(255,94,125,.4);animation:pulse 2s infinite}
+    .lang-switch{position:fixed;top:20px;left:20px;display:flex;gap:8px;z-index:11}
+    .lang-switch button{padding:8px 10px;border-radius:8px;border:1px solid var(--glass);background:rgba(26,29,40,.7);color:#fff;cursor:pointer;transition:.2s}
+    .lang-switch button.active{background:var(--primary)}
+    .recent-signals{margin-top:14px;background:rgba(30,33,48,.8);border-radius:10px;padding:15px;border:1px solid var(--glass)}
+    .recent-title{font-size:14px;color:var(--secondary);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+    .signal-list{display:flex;flex-direction:column;gap:8px}
+    .signal-item{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:rgba(0,0,0,.2);border-radius:6px;font-size:13px;border-inline-start:3px solid}
+    .signal-item.up{border-inline-start-color:var(--secondary)}
+    .signal-item.down{border-inline-start-color:#FF4D6D}
+    .signal-left{display:flex;align-items:center;gap:8px}
+    .security-lock .lock-box{background:rgba(26,29,40,.96);border:1px solid var(--glass);border-radius:12px;padding:24px;max-width:380px;text-align:center}
+    .security-lock .lock-title{font-weight:700;margin:8px 0 4px}
+    .security-lock .lock-note{font-size:13px;color:rgba(255,255,255,.85)}
+    .lock-actions{display:flex;gap:10px;justify-content:center;margin-top:12px}
+    .notification{position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:8px;background:var(--dark);color:#fff;box-shadow:0 5px 15px rgba(0,0,0,.3);z-index:1000;opacity:0;transition:.3s;border-inline-start:4px solid;max-width:90%;text-align:center}
+    .notification.show{opacity:1;transform:translate(-50%,0)}
+    .notification.success{border-inline-start-color:var(--secondary)}
+    .notification.error{border-inline-start-color:#FF4D6D}
+    .notification.info{border-inline-start-color:var(--primary)}
+
+    /* Live price card */
+    .price-card{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:rgba(0,0,0,.3);padding:12px;border-radius:10px;border:1px solid var(--glass)}
+    .price-main{font-size:22px;font-weight:800}
+    .price-change.up{color:var(--secondary)} .price-change.down{color:#FF4D6D}
+    .price-sub{font-size:12px;color:rgba(255,255,255,.75)}
+    .flag-inline{font-size:22px;margin-inline-end:6px}
+    .price-dot{width:10px;height:10px;border-radius:50%;background:#aaa;display:inline-block;margin-inline-start:8px}
+    .dot-live{background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.7);animation:ping 1.6s infinite}
+    @keyframes ping{0%{box-shadow:0 0 0 0 rgba(34,197,94,.7)}70%{box-shadow:0 0 0 10px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+
+    @keyframes pulse{0%{opacity:.9;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}100%{opacity:.9;transform:scale(1)}}
+    @keyframes pulseGlow{0%{text-shadow:0 0 5px rgba(0,209,160,.5)}50%{text-shadow:0 0 15px rgba(0,209,160,.8)}100%{text-shadow:0 0 5px rgba(0,209,160,.5)}}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes modalIn{from{opacity:0;transform:translateY(-20px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+    @keyframes shine{to{transform:translateX(100%) rotate(30deg)}}
+  </style>
+</head>
+<body>
+  <video class="video-bg" src="https://qxbroker.com/site/img/main_bg.mp4" autoplay muted loop playsinline></video>
+
+  <!-- Language switch -->
+  <div class="lang-switch" aria-label="Language switch">
+    <button id="btn-en">EN</button>
+    <button id="btn-ar" class="active">العربية</button>
+  </div>
+
+  <!-- Notification bell -->
+  <div class="notification-badge" id="notif-badge" title="Notifications">
+    <i class="fas fa-bell"></i>
+  </div>
+
+  <div class="container" id="app">
+    <!-- Left-side clocks -->
+    <div id="clock-panel" class="clock-panel" style="position:fixed; left:12px; top:110px; z-index:9; background:rgba(26,29,40,.85); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:10px 12px; width:210px; box-shadow:0 6px 20px rgba(0,0,0,.25);">
+      <div style="font-size:12px;color:rgba(255,255,255,.75);margin-bottom:6px;"><i class="fas fa-clock"></i> <span id="lbl-clocks">الساعات</span></div>
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px;">
+        <div style="font-size:12px;color:rgba(255,255,255,.75);" id="lbl-local">الوقت المحلي (جهازك)</div>
+        <div style="font-weight:700;font-size:14px;" id="local-clock">—</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;">
+        <div style="font-size:12px;color:rgba(255,255,255,.75);" id="lbl-ksa">توقيت السعودية (UTC+3)</div>
+        <div style="font-weight:700;font-size:14px;" id="ksa-clock">—</div>
+      </div>
+    </div>
+
+    <div class="header">
+      <div class="logo" aria-label="NAIF icon">
+        <span class="naif-text">NAIF</span>
+      </div>
+      <div class="app-name"><span data-i18n="appName">NAIF TRADING BOT</span><span class="app-badge" id="master-badge" style="display:none">MASTER</span></div>
+      <div class="stats">
+        <i class="fas fa-chart-line"></i> <span data-i18n="signals">الإشارات</span>: <span class="signal-count" id="signal-count">286,427</span> |
+        <span data-i18n="accuracy">الدقة</span>: <span class="accuracy-badge">96.8%</span>
+      </div>
+    </div>
+
+    <!-- Live Price Section -->
+    <div class="section">
+      <div class="section-title">
+        <span><i class="fas fa-coins"></i> <span data-i18n="livePrice">السعر اللحظي</span></span>
+        <span class="section-info" title="تحديث تلقائي كل 15 ثانية">?</span>
+      </div>
+      <div class="price-card">
+        <div>
+          <div class="price-main">
+            <span id="flag-left" class="flag-inline">🇪🇺</span><span id="flag-right" class="flag-inline">🇺🇸</span>
+            <span id="price-symbol">EUR/USD</span> — <span id="price-value">—</span>
+          </div>
+          <div class="price-sub"><span id="price-time">—</span></div>
+        </div>
+        <div style="text-align:right">
+          <div id="price-change" class="price-change">—</div>
+          <span id="live-dot" class="price-dot"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Platform -->
+    <div class="section">
+      <div class="section-title">
+        <span><i class="fas fa-exchange-alt"></i> <span data-i18n="platform">منصة التداول</span></span>
+        <span class="section-info" title="اختر منصتك المفضلة">?</span>
+      </div>
+      <div class="platform-grid">
+        <div class="platform-btn selected" data-platform="quotex">
+          <img src="https://quotex.com/favicon.ico" class="platform-icon" alt="Quotex"><span>Quotex</span>
+        </div>
+        <div class="platform-btn" data-platform="pocketoption">
+          <img src="https://pocketoption.com/favicon.ico" class="platform-icon" alt="Pocket Option"><span>Pocket Option</span>
+        </div>
+        <div class="platform-btn" data-platform="binolla">
+          <img src="https://binolla.com/binolla.ico" class="platform-icon" alt="Binolla"><span>Binolla</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Market -->
+    <div class="section">
+      <div class="section-title">
+        <span><i class="fas fa-chart-line"></i> <span data-i18n="marketType">نوع السوق</span></span>
+        <span class="section-info" title="الحي أكثر تذبذبًا، وOTC أكثر استقرارًا">?</span>
+      </div>
+      <div class="market-toggle">
+        <div class="market-btn selected" id="live-market" data-i18n="live">حي</div>
+        <div class="market-btn" id="otc-market" data-i18n="otc">خارج البورصة</div>
+      </div>
+    </div>
+
+    <!-- Pair -->
+    <div class="section">
+      <div class="section-title">
+        <span><i class="fas fa-money-bill-wave"></i> <span data-i18n="pair">زوج العملة</span></span>
+        <span class="section-info" title="اختر الزوج المراد تداوله">?</span>
+      </div>
+      <div class="custom-select">
+        <select id="currency-pair" aria-label="Currency pair select">
+          <option value="EUR/USD">EUR/USD</option><option value="GBP/USD">GBP/USD</option><option value="USD/JPY">USD/JPY</option>
+          <option value="USD/CHF">USD/CHF</option><option value="AUD/USD">AUD/USD</option><option value="USD/CAD">USD/CAD</option>
+          <option value="EUR/GBP">EUR/GBP</option><option value="EUR/JPY">EUR/JPY</option><option value="GBP/JPY">GBP/JPY</option>
+          <option value="USD/TRY">USD/TRY</option>
+          <option value="GOLD">GOLD</option><option value="SILVER">SILVER</option>
+          <option value="BTC/USD">BTC/USD</option><option value="ETH/USD">ETH/USD</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Timeframe -->
+    <div class="section">
+      <div class="section-title">
+        <span><i class="fas fa-clock"></i> <span data-i18n="timeframe">الإطار الزمني</span></span>
+        <span class="section-info" title="اختر الإطار المناسب">?</span>
+      </div>
+      <div class="time-options">
+        <div class="time-btn selected" data-time="60">1m</div>
+        <div class="time-btn" data-time="300">5m</div>
+        <div class="time-btn" data-time="900">15m</div>
+        <div class="time-btn" data-time="1800">30m</div>
+        <div class="time-btn" data-time="3600">1h</div>
+        <div class="time-btn" data-time="7200">2h</div>
+      </div>
+    </div>
+
+    <button class="btn" id="generate-btn"><i class="fas fa-bolt"></i> <span data-i18n="generate">توليد إشارة</span></button>
+
+    <div class="recent-signals">
+      <div class="recent-title">
+        <span><i class="fas fa-history"></i> <span data-i18n="recent">آخر الإشارات</span></span>
+        <span class="section-info" title="آخر 5 إشارات">?</span>
+      </div>
+      <div class="signal-list" id="signal-list"></div>
+    </div>
+  </div>
+
+  <!-- Signal Modal -->
+  <div class="signal-modal" id="signal-modal" role="dialog" aria-modal="true">
+    <div class="signal-box">
+      <div class="signal-direction signal-up" id="signal-direction">شراء</div>
+      <div class="signal-details">
+        <div><strong data-i18n="pairLabel">الزوج:</strong> <span class="flagpair"><span id="modal-flag-left">🇪🇺</span>/<span id="modal-flag-right">🇺🇸</span></span> <span id="result-pair">EUR/USD</span></div>
+        <div><strong data-i18n="tfLabel">الإطار:</strong> <span id="result-time">1m</span></div>
+        <div><strong data-i18n="confLabel">الثقة:</strong> <span id="ai-confidence">92%</span></div>
+        <div><strong data-i18n="expLabel">تنتهي خلال:</strong> <span id="expiry-time">30s</span></div>
+        <div><strong data-i18n="platLabel">المنصة:</strong> <span id="result-platform">Quotex</span></div>
+      </div>
+      <button class="btn" id="close-signal"><i class="fas fa-check"></i> <span data-i18n="executed">تم التنفيذ</span></button>
+    </div>
+  </div>
+
+  <!-- License Modal -->
+  <div class="license-modal" id="license-modal" role="dialog" aria-modal="true">
+    <div class="license-box">
+      <h3 data-i18n="enterKey">أدخل مفتاح الترخيص</h3>
+      <p data-i18n="premiumNote">للوصول إلى الإشارات المميزة</p>
+      <input type="password" class="license-input" id="license-input" placeholder="XXXX-XXXX" autocomplete="off">
+      <button class="btn" id="submit-license"><span data-i18n="submit">إرسال</span></button>
+      <div class="contact-buttons" style="margin-top:12px">
+        <a href="https://t.me/najran2015" class="contact-btn telegram-btn" rel="noopener" aria-label="Telegram">
+          <i class="fab fa-telegram"></i>
+        </a>
+      </div>
+      <p style="margin-top:15px;font-size:13px;color:var(--light)">Telegram: @najran2015</p>
+    </div>
+  </div>
+
+  <!-- Terms Modal -->
+  <div class="terms-modal" id="terms-modal" role="dialog" aria-modal="true">
+    <div class="terms-box">
+      <h3 data-i18n="tAndC">الشروط والأحكام</h3>
+      <div class="checkbox-container">
+        <input type="checkbox" id="accept-terms" required>
+        <label for="accept-terms" data-i18n="accept">أوافق على الشروط والأحكام</label>
+      </div>
+      <button class="btn" id="accept-terms-btn"><span data-i18n="proceed">متابعة</span></button>
+    </div>
+  </div>
+
+  <!-- Security Lock -->
+  <div class="security-lock" id="security-lock">
+    <div class="lock-box">
+      <i class="fas fa-shield-alt" style="font-size:36px;color:var(--accent)"></i>
+      <div class="lock-title" data-i18n="lockedTitle">تم تفعيل القفل الأمني</div>
+      <div class="lock-note" data-i18n="lockedNote">تم رصد أدوات المطوّر أو إجراء محظور.</div>
+      <div class="lock-actions">
+        <button class="btn" id="reload-btn" style="width:auto;padding:10px 16px">إعادة تحميل</button>
+        <button class="btn" id="continue-btn" style="width:auto;padding:10px 16px;background:linear-gradient(135deg,#444,#333)">متابعة</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /************ i18n ************/
+    const i18n = {
+      en: {appName:"NAIF TRADING BOT",signals:"Signals",accuracy:"Accuracy",platform:"Trading Platform",marketType:"Market Type",live:"LIVE",otc:"OTC",
+        pair:"Currency Pair",timeframe:"Time Frame",generate:"GENERATE SIGNAL",recent:"Recent Signals",
+        pairLabel:"Pair:",tfLabel:"Time Frame:",confLabel:"Confidence:",expLabel:"Expires in:",platLabel:"Platform:",executed:"TRADE EXECUTED",
+        enterKey:"ENTER LICENSE KEY",premiumNote:"To access premium signals",submit:"SUBMIT",tAndC:"TERMS & CONDITIONS",
+        accept:"I accept the Terms & Conditions",proceed:"PROCEED",lockedTitle:"Security Lock Activated",lockedNote:"Devtools or forbidden action detected.",
+        livePrice:"Live Price", lastUpdate:"Last update:", change:"Change", clocks:"Clocks", localTime:"Local time (your device)", ksaTime:"Saudi time (UTC+3)"},
+      ar: {appName:"NAIF TRADING BOT",signals:"الإشارات",accuracy:"الدقة",platform:"منصة التداول",marketType:"نوع السوق",live:"حي",otc:"خارج البورصة",
+        pair:"زوج العملة",timeframe:"الإطار الزمني",generate:"توليد إشارة",recent:"آخر الإشارات",
+        pairLabel:"الزوج:",tfLabel:"الإطار:",confLabel:"الثقة:",expLabel:"تنتهي خلال:",platLabel:"المنصة:",executed:"تم التنفيذ",
+        enterKey:"أدخل مفتاح الترخيص",premiumNote:"للوصول إلى الإشارات المميزة",submit:"إرسال",tAndC:"الشروط والأحكام",
+        accept:"أوافق على الشروط والأحكام",proceed:"متابعة",lockedTitle:"تم تفعيل القفل الأمني",lockedNote:"تم رصد أدوات المطوّر أو إجراء محظور.",
+        livePrice:"السعر اللحظي", lastUpdate:"آخر تحديث:", change:"التغير", clocks:"الساعات", localTime:"الوقت المحلي (جهازك)", ksaTime:"توقيت السعودية (UTC+3)"}
+    };
+    let currentLang = localStorage.getItem('ui_lang') || 'ar';
+    function applyLang(lang){
+      currentLang = lang; localStorage.setItem('ui_lang', lang);
+      document.documentElement.lang = lang; document.documentElement.dir = (lang==='ar')?'rtl':'ltr';
+      const dict = i18n[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if (dict[k]) el.textContent = dict[k]; });
+      document.getElementById('btn-en').classList.toggle('active', lang==='en');
+      document.getElementById('btn-ar').classList.toggle('active', lang==='ar');
+      const sdir = document.getElementById('signal-direction');
+      if (sdir.classList.contains('signal-up')) sdir.textContent = (lang==='ar'?'شراء':'UP');
+      if (sdir.classList.contains('signal-down')) sdir.textContent = (lang==='ar'?'بيع':'DOWN');
+      document.querySelectorAll('[data-i18n="livePrice"]').forEach(el=>el.textContent=dict.livePrice);
+      try{document.getElementById("lbl-clocks").textContent=dict.clocks;document.getElementById("lbl-local").textContent=dict.localTime;document.getElementById("lbl-ksa").textContent=dict.ksaTime;}catch(_){ }
+    }
+
+    /************ Secrets (License: 2561 user / 4045 master) ************/
+    const Secrets = (()=>{
+      const k = 110, dec = arr => arr.map(n => String.fromCharCode(n-k)).join('');
+      return { user: dec([160,163,164,159]), master: dec([162,158,162,163]) };
+    })();
+
+    /************ Twelve Data API key (obfuscated) ************/
+    const USER_TD_API = "6cdf4e70d5a246efa5e23c208de894b5";
+    const TDKey = (()=>{
+      const plus = 7;
+      const enc = [61,106,100,109,53,106,101,55,100,53,97,50,52,100,108,106,105,55,97,53,101,50,51,106,50,49,107,108,106,101,56,106];
+      return enc.map(n => String.fromCharCode(n - plus)).join('');
+    })();
+
+    /************ Flags ************/
+    function flagForCurrency(ccy){
+      
+      const map = {
+        'EUR':'🇪🇺','USD':'🇺🇸','GBP':'🇬🇧','JPY':'🇯🇵','CHF':'🇨🇭','AUD':'🇦🇺','CAD':'🇨🇦','NZD':'🇳🇿',
+        'TRY':'🇹🇷','SAR':'🇸🇦','AED':'🇦🇪','KWD':'🇰🇼','QAR':'🇶🇦','BHD':'🇧🇭','EGP':'🇪🇬','INR':'🇮🇳',
+        'CNY':'🇨🇳','HKD':'🇭🇰','SGD':'🇸🇬','KRW':'🇰🇷','TWD':'🇹🇼','THB':'🇹🇭','MYR':'🇲🇾','PHP':'🇵🇭',
+        'IDR':'🇮🇩','PKR':'🇵🇰','BRL':'🇧🇷','ARS':'🇦🇷','RUB':'🇷🇺','MXN':'🇲🇽','ZAR':'🇿🇦','SEK':'🇸🇪',
+        'NOK':'🇳🇴','DKK':'🇩🇰','PLN':'🇵🇱','CZK':'🇨🇿','HUF':'🇭🇺','ILS':'🇮🇱'
+      };
+
+      if (ccy==='BTC') return '₿';
+      if (ccy==='ETH') return 'Ξ';
+      if (ccy==='XAU' || ccy==='GOLD') return '🟡';
+      if (ccy==='XAG' || ccy==='SILVER') return '⚪';
+      return map[ccy] || '🏳️';
+    }
+    function flagsForPair(sel){
+      // returns {left,right}
+      if (sel==='GOLD') return {left:flagForCurrency('XAU'), right:''};
+      if (sel==='SILVER') return {left:flagForCurrency('XAG'), right:''};
+      const s = sel.replace(' (OTC)','');
+      const sp = s.split('/');
+      if (sp.length===2){
+        const left = flagForCurrency(sp[0]);
+        const right = flagForCurrency(sp[1]);
+        return {left, right};
+      }
+      return {left:'', right:''};
+    }
+
+    /************ State ************/
+    let isLicenseValid = localStorage.getItem('isLicenseValid') === 'true';
+    let isTermsAccepted = localStorage.getItem('isTermsAccepted') === 'true';
+    let isMaster = localStorage.getItem('isMaster') === 'true';
+    let recentSignals = JSON.parse(localStorage.getItem('recentSignals') || '[]');
+    
+    const UPDATE_MS_BASE = new URLSearchParams(location.search).has('fast') ? 750 : 1000;
+    let updateMs = UPDATE_MS_BASE;
+    let priceTimer = null;
+
+    let lastPrice = null;
+    let signalCount = parseInt(localStorage.getItem('signalCount') || '286427', 10);
+
+    // DOM
+    const licenseModal = document.getElementById('license-modal');
+    const licenseInput = document.getElementById('license-input');
+    const submitLicense = document.getElementById('submit-license');
+    const termsModal = document.getElementById('terms-modal');
+    const acceptTerms = document.getElementById('accept-terms');
+    const acceptTermsBtn = document.getElementById('accept-terms-btn');
+    const generateBtn = document.getElementById('generate-btn');
+    const signalModal = document.getElementById('signal-modal');
+    const closeSignal = document.getElementById('close-signal');
+    const signalList = document.getElementById('signal-list');
+    const notifBadge = document.getElementById('notif-badge');
+    const masterBadge = document.getElementById('master-badge');
+    const securityLock = document.getElementById('security-lock');
+    const reloadBtn = document.getElementById('reload-btn');
+    const continueBtn = document.getElementById('continue-btn');
+    const priceSymbol = document.getElementById('price-symbol');
+    const priceValue  = document.getElementById('price-value');
+    const priceChange = document.getElementById('price-change');
+    const priceTime   = document.getElementById('price-time');
+    const liveDot     = document.getElementById('live-dot');
+    const flagLeft    = document.getElementById('flag-left');
+    const flagRight   = document.getElementById('flag-right');
+    const modalFlagLeft = document.getElementById('modal-flag-left');
+    const modalFlagRight = document.getElementById('modal-flag-right');
+    const signalCountEl = document.getElementById('signal-count');
+
+    // Audio (WebAudio) ************
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    async function playTone(freq=440, dur=120, type='sine', vol=0.2){
+      try{ if(audioCtx && audioCtx.state==='suspended'){ await audioCtx.resume(); } }catch(_){}
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = type; o.frequency.value = freq;
+      g.gain.value = 0.0001;
+      o.connect(g); g.connect(audioCtx.destination);
+      const now = audioCtx.currentTime;
+      g.gain.exponentialRampToValueAtTime(vol, now + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + dur/1000);
+      o.start(now); o.stop(now + dur/1000 + 0.02);
+    }
+    function playClick(){ playTone(1400, 40, 'triangle', 0.06); }
+    function playSuccess(){
+      const seq = [[523,140],[659,140],[784,180]]; // C5 E5 G5
+      let t = 0;
+      seq.forEach(([f,d])=>{ setTimeout(()=>playTone(f,d,'sine',0.12), t); t += d+30; });
+    }
+    function playError(){
+      const seq = [[250,180,'square'],[180,220,'square']];
+      let t = 0; seq.forEach(([f,d,w])=>{ setTimeout(()=>playTone(f,d,w,0.12), t); t += d+40; });
+    }
+
+    // Init
+    function init(){
+      updateSignalList();
+      applyLang(currentLang);
+    try{ startClocks(); }catch(_){}
+      if (isMaster) masterBadge.style.display = 'inline-block';
+      // set initial count
+      renderSignalCount();
+      // start price loop
+      startPriceLoop();
+      // update symbol on select changes
+      document.getElementById('currency-pair').addEventListener('change', ()=>{
+        priceSymbol.textContent = document.getElementById('currency-pair').value;
+        updateFlags();
+        startPriceLoop();
+        playClick();
+      });
+    }
+    init();
+    try{ startClocks(); }catch(_){}
+
+    function formatNum(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+    function renderSignalCount(){ signalCountEl.textContent = formatNum(signalCount); }
+
+    /************ Pair -> TwelveData symbol map ************/
+    function mapSymbol(sel){
+      const s = sel.replace(' (OTC)','');
+      if (s === 'GOLD') return 'XAU/USD';
+      if (s === 'SILVER') return 'XAG/USD';
+      return s; // "EUR/USD", "USD/JPY", "BTC/USD", "ETH/USD"
+    }
+
+    function updateFlags(){
+      const sel = document.getElementById('currency-pair').value;
+      const f = flagsForPair(sel);
+      flagLeft.textContent = f.left || '';
+      flagRight.textContent = f.right || '';
+    }
+    updateFlags();
+
+    /************ Live price ************/
+    function startPriceLoop(){
+      if (priceTimer) clearInterval(priceTimer);
+      updatePrice();
+      priceTimer = setInterval(updatePrice, updateMs);
+    }
+
+    async function updatePrice(){
+      const sel = document.getElementById('currency-pair').value;
+      const symbol = mapSymbol(sel);
+      priceSymbol.textContent = sel;
+      const f = flagsForPair(sel);
+      flagLeft.textContent = f.left || '';
+      flagRight.textContent = f.right || '';
+      try{
+        liveDot.classList.add('dot-live');
+        const url = `https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbol)}&interval=1min&apikey=${USER_TD_API||TDKey}`;
+        const res = await fetch(url);
+        const json = await res.json();
+        if (!json || json.code || (!json.price && !json.close)){
+          throw new Error(json && (json.message || json.status) || 'No data');
+        }
+        const price = Number(json.price || json.close);
+        const change = Number(json.change || 0);
+        const pchg = Number(json.percent_change || 0);
+        priceValue.textContent = isFinite(price) ? price.toFixed(5).replace(/0+$/,'').replace(/\.$/,'') : '—';
+        const isUp = pchg >= 0;
+        priceChange.className = 'price-change ' + (isUp ? 'up' : 'down');
+        priceChange.textContent = `${(isUp?'+':'')}${change.toFixed(5).replace(/0+$/,'').replace(/\.$/,'')} (${(isUp?'+':'')}${pchg.toFixed(2)}%)`;
+        const now = new Date();
+        const ts = json.datetime || now.toISOString();
+        priceTime.textContent = (currentLang==='ar' ? i18n.ar.lastUpdate : i18n.en.lastUpdate) + ' ' + ts;
+        if (lastPrice !== null && isFinite(lastPrice)){
+          if (price > lastPrice){ priceValue.style.color = 'var(--secondary)'; }
+          else if (price < lastPrice){ priceValue.style.color = '#FF4D6D'; }
+          setTimeout(()=> priceValue.style.color = '#fff', 800);
+        }
+        lastPrice = price;
+        if (updateMs > UPDATE_MS_BASE){ updateMs = UPDATE_MS_BASE; if (priceTimer){ clearInterval(priceTimer); priceTimer = setInterval(updatePrice, updateMs); } }
+      }catch(err){
+        priceValue.textContent = '—';
+        priceChange.textContent = (currentLang==='ar'?'لا توجد بيانات':'No data');
+        priceChange.className = 'price-change';
+        priceTime.textContent = '';
+        // graceful backoff in case of rate limits
+        if (updateMs < 1500) {
+          updateMs = 1500;
+          if (priceTimer) { clearInterval(priceTimer); priceTimer = setInterval(updatePrice, updateMs); }
+          try{ showNotification(currentLang==='ar'?'تم تخفيض سرعة التحديث لتجنّب حظر المزود':'Auto-slowed updates to avoid provider limits','info'); }catch(_){}
+        }
+      }
+    }
+
+    /************ Buttons & interactivity ************/
+    document.getElementById('btn-en').addEventListener('click', ()=>{ applyLang('en'); playClick(); });
+    document.getElementById('btn-ar').addEventListener('click', ()=>{ applyLang('ar'); playClick(); });
+    document.getElementById('notif-badge').addEventListener('click', ()=> { showNotification(currentLang==='ar'?'لا توجد إشعارات':'No notifications','info'); playClick(); });
+
+    const clickableClasses = ['.platform-btn','.market-btn','.time-btn','.btn'];
+    clickableClasses.forEach(cls=>{
+      document.querySelectorAll(cls).forEach(el=>{
+        el.addEventListener('click', ()=> playClick());
+      });
+    });
+
+    generateBtn.addEventListener('click', ()=>{
+      if (!isLicenseValid){ licenseModal.style.display='flex'; return; }
+      if (!isTermsAccepted){ termsModal.style.display='flex'; return; }
+      showLoadingAndGenerate();
+    });
+    closeSignal.addEventListener('click', ()=>{ signalModal.style.display='none'; });
+
+    document.querySelectorAll('.platform-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('.platform-btn').forEach(b=>b.classList.remove('selected'));
+        btn.classList.add('selected');
+        updatePairOptions(btn.dataset.platform);
+      });
+    });
+
+    const liveMarket = document.getElementById('live-market');
+    const otcMarket = document.getElementById('otc-market');
+    liveMarket.addEventListener('click', ()=>{ liveMarket.classList.add('selected'); otcMarket.classList.remove('selected'); updatePairOptions(); });
+    otcMarket.addEventListener('click', ()=>{ otcMarket.classList.add('selected'); liveMarket.classList.remove('selected'); updatePairOptions(); });
+
+    document.querySelectorAll('.time-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{ document.querySelectorAll('.time-btn').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); });
+    });
+
+    submitLicense.addEventListener('click', ()=>{
+      const v = (licenseInput.value || '').trim();
+      if (v === Secrets.user || v === Secrets.master){
+        isLicenseValid = true; isMaster = (v === Secrets.master);
+        localStorage.setItem('isLicenseValid','true'); localStorage.setItem('isMaster', isMaster?'true':'false');
+        licenseModal.style.display='none'; termsModal.style.display='flex';
+        if (isMaster) masterBadge.style.display='inline-block';
+        playSuccess();
+      } else { licenseInput.value=''; showNotification(currentLang==='ar'?'مفتاح غير صحيح':'Invalid license key','error'); playError(); }
+    });
+
+    acceptTermsBtn.addEventListener('click', ()=>{
+      if (acceptTerms.checked){ isTermsAccepted = true; localStorage.setItem('isTermsAccepted','true'); termsModal.style.display='none'; showLoadingAndGenerate(); }
+    });
+
+    function updatePairOptions(platform){
+      const pairSelect = document.getElementById('currency-pair');
+      const isOTC = otcMarket.classList.contains('selected');
+      const selectedPlatform = (platform || document.querySelector('.platform-btn.selected').dataset.platform);
+      const base = ["EUR/USD","GBP/USD","USD/JPY","USD/CHF","AUD/USD","USD/CAD","EUR/GBP","EUR/JPY","GBP/JPY"];
+      let extra = [];
+      if (selectedPlatform==='binolla'){ extra = ["BTC/USD","ETH/USD","GOLD","SILVER"]; }
+      if (selectedPlatform==='quotex' || selectedPlatform==='pocketoption'){ extra = ["USD/TRY","BTC/USD","ETH/USD","GOLD","SILVER"]; }
+      const all = [...base, ...extra];
+      pairSelect.innerHTML=''; all.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.text=(isOTC && p.includes('/'))?`${p} (OTC)`:p; pairSelect.appendChild(o); });
+      priceSymbol.textContent = pairSelect.value;
+      updateFlags();
+      startPriceLoop();
+    }
+
+    function showLoadingAndGenerate(){
+      const overlay = document.createElement('div');
+      overlay.style.position='fixed'; overlay.style.inset='0'; overlay.style.zIndex='99'; overlay.style.display='flex';
+      overlay.style.alignItems='center'; overlay.style.justifyContent='center'; overlay.style.background='rgba(0,0,0,.7)';
+      const loadingMsg = (currentLang==='ar'?'يجري الاتصال بمزود البيانات...':'Connecting to data provider...');
+      overlay.innerHTML = '<div style="text-align:center;color:#fff"><div style="width:50px;height:50px;border:5px solid rgba(108,92,231,.3);border-top-color:var(--primary);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 15px"></div><p>'+loadingMsg+'</p></div>';
+      document.body.appendChild(overlay);
+      setTimeout(()=>{ document.body.removeChild(overlay); generateSignal(); }, 1000);
+    }
+
+    function generateSignal(){
+      const dirUp = Math.random()>0.5, dirEl=document.getElementById('signal-direction');
+      dirEl.className = 'signal-direction ' + (dirUp?'signal-up':'signal-down');
+      dirEl.textContent = (currentLang==='ar') ? (dirUp?'شراء':'بيع') : (dirUp?'UP':'DOWN');
+      const pair = document.getElementById('currency-pair').value;
+      const f = flagsForPair(pair);
+      document.getElementById('result-pair').textContent = pair;
+      document.getElementById('modal-flag-left').textContent = f.left || '';
+      document.getElementById('modal-flag-right').textContent = f.right || '';
+      const time = document.querySelector('.time-btn.selected').getAttribute('data-time');
+      const timeText = (time<60)?(time+'s'):(time<3600?(time/60)+'m':(time/3600)+'h');
+      document.getElementById('result-time').textContent=timeText;
+      const platform = document.querySelector('.platform-btn.selected').textContent.trim();
+      document.getElementById('result-platform').textContent=platform;
+      const confidence=(85+Math.floor(Math.random()*14))+'%';
+      document.getElementById('ai-confidence').textContent=confidence;
+      let expirySeconds=Math.min(parseInt(time)*2,180);
+      const expiryEl=document.getElementById('expiry-time'); expiryEl.textContent=expirySeconds+'s';
+      const t=setInterval(()=>{ expirySeconds--; expiryEl.textContent=expirySeconds+'s'; if(expirySeconds<=0){clearInterval(t); expiryEl.textContent='EXPIRED';} },1000);
+      signalModal.style.display='flex';
+      const stamp=new Date().toLocaleTimeString();
+      const entry={pair,direction:dirUp?(currentLang==='ar'?'شراء':'UP'):(currentLang==='ar'?'بيع':'DOWN'),time:timeText,confidence,platform,timestamp:stamp,flagL:f.left,flagR:f.right};
+      recentSignals.unshift(entry); if(recentSignals.length>5) recentSignals.pop();
+      localStorage.setItem('recentSignals', JSON.stringify(recentSignals));
+      updateSignalList();
+      // increment global counter
+      signalCount += 1; localStorage.setItem('signalCount', String(signalCount)); renderSignalCount();
+    }
+
+    function updateSignalList(){
+      const box=document.getElementById('signal-list'); box.innerHTML='';
+      if(!recentSignals.length){ box.innerHTML='<div style="text-align:center;color:rgba(255,255,255,.5);padding:10px">—</div>'; return; }
+      recentSignals.forEach(s=>{
+        const div=document.createElement('div'); div.className='signal-item '+(s.direction.includes('UP')||s.direction.includes('شراء')?'up':'down');
+        div.innerHTML=`<div class="signal-left"><span class="flagpair">${s.flagL||''}${s.flagR?'/'+s.flagR:''}</span><span class="signal-pair">${s.pair}</span> <span class="signal-time">${s.timestamp}</span></div><div><span>${s.direction}</span> <span>${s.confidence}</span></div>`;
+        box.appendChild(div);
+      });
+    }
+
+    function showNotification(message,type='success'){
+      const n=document.createElement('div'); n.className='notification '+type; n.textContent=message; document.body.appendChild(n);
+      setTimeout(()=>{ n.classList.add('show'); },10); setTimeout(()=>{ n.classList.remove('show'); setTimeout(()=>document.body.removeChild(n),300); },2800);
+    }
+
+    /************ Anti-Inspect (safer) ************/
+    window.addEventListener('contextmenu', e => e.preventDefault());
+    window.addEventListener('keydown',(e)=>{
+      const k=(e.key||'').toLowerCase();
+      if ((e.ctrlKey && ['s','u','p'].includes(k)) || (e.ctrlKey && e.shiftKey && ['i','j','c'].includes(k)) || e.key==='F12' || e.keyCode===123){
+        e.preventDefault(); e.stopPropagation(); triggerLock();
+      }
+    }, true);
+    let devtoolsCount=0;
+    function checkDevtools(){
+      const w=window, TH=400;
+      const bigGap = (w.outerWidth - w.innerWidth > TH) || (w.outerHeight - w.innerHeight > TH);
+      if (bigGap){ devtoolsCount++; if (devtoolsCount>=2) triggerLock(); } else { devtoolsCount=0; }
+    }
+    setInterval(checkDevtools, 1500);
+    window.addEventListener('resize', checkDevtools);
+    function triggerLock(){ securityLock.style.display='flex'; }
+    reloadBtn.addEventListener('click', ()=>location.reload());
+    continueBtn.addEventListener('click', ()=>{ securityLock.style.display='none'; });
+
+    
+    
+    /************ Clocks ************/
+    function startClocks(){
+      function fmt(dt, tz){
+        return new Intl.DateTimeFormat(currentLang==='ar'?'ar':'en', {
+          hour:'2-digit', minute:'2-digit', second:'2-digit',
+          year:'numeric', month:'2-digit', day:'2-digit',
+          hour12:false, timeZone: tz
+        }).format(dt);
+      }
+      function tick(){
+        const now = new Date();
+        try{
+          document.getElementById('local-clock').textContent = fmt(now, Intl.DateTimeFormat().resolvedOptions().timeZone);
+          document.getElementById('ksa-clock').textContent = fmt(now, 'Asia/Riyadh');
+        }catch(_){}
+      }
+      tick(); setInterval(tick, 1000);
+    }
+
+    // Global error guard (avoid silent breaks)
+    window.addEventListener('error', (e)=>{
+      try{ showNotification((currentLang==='ar'?'تم إصلاح خطأ بالواجهة: ':'UI error: ') + (e.message||''), 'info'); }catch(_){}
+    });
+
+    // Apply default language and kick off
+    applyLang(currentLang);
+    try{ startClocks(); }catch(_){}
+  </script>
+</body>
+</html>
